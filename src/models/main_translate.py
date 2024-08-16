@@ -460,7 +460,7 @@ def log_training_stats(epoch, train_loss_dict, valid_loss_dict, logger):
     for (train_key, train_value), (valid_key, valid_value) in zip(
         train_loss_dict.items(), valid_loss_dict.items()
     ):
-        logger.info(
+        logger.debug(
             f"Epoch: {epoch}, {train_key}: {train_value[-1]}, {valid_key}: {valid_value[-1]}"
         )
 
@@ -617,7 +617,7 @@ def train_translate(cfg, logger):
         in_pretraining = False
         if cfg["PRETRAIN_TARGET_MODALITY"] == "gamma_anneal":
             in_pretraining = epoch < cfg["PRETRAIN_EPOCHS"]
-        logger.info(f" in_pretraining: {in_pretraining}")
+        logger.debug(f" in_pretraining: {in_pretraining}")
         for k, _ in train_loss_stats.items():
             train_loss_stats[k].append(epoch_loss_stats[k])
         # VALIDATION ROUND --------------------------------------------------------
@@ -767,17 +767,17 @@ def train_translate(cfg, logger):
             "valid_class_loss": class_epoch_lossv / valid_size,
             "valid_total_loss": total_epoch_lossv / valid_size,
         }
-        logger.info(f"Epoch: {epoch}")
-        logger.info(f"Valid losses: {valid_epoch_stats}")
+        logger.debug(f"Epoch: {epoch}")
+        logger.debug(f"Valid losses: {valid_epoch_stats}")
         total_epoch_lossv = total_epoch_lossv / valid_size
-        logger.info(f"Total valid loss: {total_epoch_lossv}")
+        logger.debug(f"Total valid loss: {total_epoch_lossv}")
 
         for k, _ in valid_loss_stats.items():
             valid_loss_stats[k].append(valid_epoch_stats[k])
         if (total_epoch_lossv < best_total_lossv) and not in_pretraining:
-            logger.info(f"New best model found at epoch {epoch}. Saving at checkpoint")
+            logger.debug(f"New best model found at epoch {epoch}. Saving at checkpoint")
             best_total_lossv = total_epoch_lossv
-            logger.info(f"Best total loss: {best_total_lossv}")
+            logger.debug(f"Best total loss: {best_total_lossv}")
             # best_paths = save_best_model(cfg=cfg, models=models, epoch=i, logger=logger)
             best_to_model, best_from_model = (
                 copy.deepcopy(models["to"]),
@@ -785,6 +785,8 @@ def train_translate(cfg, logger):
             )
         if (epoch % checkpoint_intervall == 0) and (best_total_lossv < best_last_cpt):
             logger.info(f"Checkpointing best model at epoch {epoch}")
+            logger.info(f"Valid losses: {valid_epoch_stats}")
+            logger.info(f"Total valid loss: {total_epoch_lossv}")
             log_training_stats(
                 epoch=epoch,
                 train_loss_dict=train_loss_stats,
