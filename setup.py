@@ -7,5 +7,5 @@ setup(
     version="1.0.0",
     description="AUTOENCODIX is a framework for multi-modal data integration by autoencoders.",
     author="Max Joas, Jan Ewald",
-    license="MIT",
+    license="Apache2.0",
 )
