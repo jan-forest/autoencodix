@@ -1,0 +1,90 @@
+LOGLEVEL: "INFO" # OPTIONAL (DEBUG, INFO, WARNING, ERROR)
+
+# Data Specification ---------------------------------------------------------
+# ----------------------------------------------------------------------------
+ROOT_RAW: "data/raw" # This variable specifies the root directory path for raw data.
+ROOT_IMAGE: "data/fakedata/tcga_fake" # This variable specifies the root directory path for raw images data.
+DELIM: "\t" # This variable specifies the delimiter character used in input and output data files. Input files need to have file extension csv, tsv or txt.
+SPLIT: [0.7, 0.1, 0.2] # OPTIONAL Train, Validate, Test or "pre-computed"
+SPLIT_FILE: "data/processed/sample_split.parquet"  # This variable specifies the path to the file containing the generated (use always default path) or pre-computed data split. If you want to give a specific train/test/valid split then you need to provide a file with the sample ID and a column that indicates to which split the sample belongs (train, test, valid). To activate pre-computed split, you must set config option SPLIT to "pre-computed".
+
+FORM_SUFFIX: "_formatted.parquet" # This variable specifies a suffix for the formatted data files when running join_format_tcga or format_singlecell
+
+# Single-Cell Specification --------------------------------------------------
+# ----------------------------------------------------------------------------
+
+MIN_GENE: 0.06 # Controls filtering of sparse samples (cells) with less then MIN_GENE percent expressed genes of total gene using scanpy filter_cells  
+MIN_PERC_CELLS: 0.1 # Keep only genes in single-cell data which are present in at least x fraction of all cells using filter scanpy filter_genes. Filtering is done after sample filtering.
+K_FILTER_SC: 6000 # After filtering for sparse samples and sparse genes the K_FILTER_SC genes with the highes variables are selected using scanpy highly_variable_genes. Should be higher than K_FILTER in the run config.
+
+H5AD_FILES: # Path to single-cell files in h5ad-format.
+  - "scRNA_human_cortex.h5ad"
+  - "scATAC_human_cortex.h5ad"
+  # - "scRNA_fetalBM_both.h5ad"
+
+ANNDATA_LAYER:
+  - "X"  # Standard data matrix adata.X
+  - "obs" # Keep adata.obs as clinical data for visualization
+  # - "layers/velocity" # additional layer in adata
+  # - "layers/custom" # additional layer in adata
+
+# TCGA Specification ---------------------------------------------------------
+# ----------------------------------------------------------------------------
+TCGA_FOLDER: "_tcga_pan_can_atlas_2018/" # This variable specifies the subdirectory path for TCGA data.
+# SUBTYPES:
+#   - lusc
+#   - luad
+SUBTYPES: "ALL" # This variable specifies a list of cancer subtypes to use.
+
+DATAFILES: # This variable specifies a list of data file names to use. This does not need no be changed.
+  - "data_methylation_per_gene.txt"
+  - "data_mrna_seq_v2_rsem.txt"
+  - "data_methylation_hm27_hm450_merged.txt"
+  - "data_log2_cna.txt"
+  - "data_clinical_patient.txt"
+  - "data_clinical_sample.txt"
+  - "data_mutations.txt"
+
+
+# Model and Training Specification -------------------------------------------
+# ----------------------------------------------------------------------------
+START_FROM_LAST_CHECKPOINT: false # This variable specifies whether to start training from the last checkpoint. Useful when machine or server crashed during training. Recommended to restart training with make model_only.
+WEIGHT_DECAY: 0.001 # This variables specifies the hyperparameter weight decay for training with solver (AdamW).
+DROP_P: 0.1  #  Probability of drop out in drop out layer in all autoencoder architectures with drop out. 
+ANNEAL: "logistic-mid" # This variables controls the beta-annealing (VAE-loss) of the training of all variational autoencoders. Options are logistic-early, logistic-mid, logistic-late, 3phase-linear,3phase-log or no-annealing
+ANNEAL_PRETRAINING: False #OPTIONAL (True or False) indicates if beta annealing should be used in pretraining target modality or while using gamma annealing in pretraining
+PRUN_PATIENCE: 0.05 # This variables controls the pruning of runs during hyperparameter tuning with optuna. "0" is full pruning (no patience) and stops trials early. "1" leads to no pruning at all since all epochs are considered. Pruning is disabled when beta-annealing is active.
+WEIGHT_DECAY_LOWER_LIMIT: 0.00001 # OPTIONAL lower limit for weight decay in hyperparameter tuning with optuna
+WEIGHT_DECAY_UPPER_LIMIT: 0.1 # OPTIONAL upper limit for weight decay in hyperparameter tuning with optuna
+ENCODING_FACTOR_LOWER_LIMIT: 1 # OPTIONAL lower limit for encoding factor in hyperparameter tuning with optuna
+ENCODING_FACTOR_UPPER_LIMIT: 64 # OPTIONAL upper limit for encoding factor in hyperparameter tuning with optuna
+TUNE_N_FILTERS: True # OPTIONAL (True or False) indicates if the number of filters should be tuned in hyperparameter tuning with optuna 
+LOSS_REDUCTION: "sum" #OPTIONAL (sum or mean) indicates if the loss should be summed or averaged over all features in the loss function
+
+FIX_RANDOMNESS: "random" # "random" for no fixing, "all" fix all randomness, "data_split" fix train/test/valid split, "training" fix weight initialization and randomness in training; not available for tuning with optuna
+GLOBAL_SEED: 42 # Seed used to fix randomness.
+
+KEEP_NOT_ONT: false # If feature is not part of the provided ontology, a new ontology for those features will created and features will not be dropped
+
+NORMALIZE_RECONS_LOSS_XMODALIX: true # Should the reconstruction loss terms for each data modality which are translated by x-modalix be normalized by their respective feature size? 
+
+CHECKPT_SAVE: false # Should intermediate models in training be saved in models folder at checkpoint epochs? Not available for x-modalix
+RECON_SAVE: false # Should the reconstructed values of input features (x) be saved under reports?
+
+#  visualize control --------------------------------------------------------
+# ---------------------------------------------------------------------------
+CHECKPT_PLOT: false # Should the latent space be plotted at checkpoint epochs? Not available for x-modalix
+PLOT_INPUT2D: false # Should a direct embedding of inputlayer performed (using DIM_RED_METH) and be plotted for comparison to autoencoder?
+PLOT_WEIGHTS: false # Should the initial and trained weights be plotted as heatmaps
+PLOT_CLUSTLATENT: false # Should latent space be clustered and be visualized
+PLOT_NUMERIC: false # Should numeric parameters in CLIN_PARAM be plotted as continuous (true) or as categories/percentiles (false, default)
+
+#  ml_task control --------------------------------------------------------
+# ---------------------------------------------------------------------------
+CV: 5 # This variable specifies the the number of cross-validation rounds (only if ML_SPLIT: "CV-on-all-data")
+
+# Test Synth Signal Specification -------------------------------------------
+# ---------------------------------------------------------------------------
+APPLY_SIGNAL: false # For testing a synthetic signal can be applied to the provided features and samples (see below). Synthetic signal is defined as setting the value of the features to 90% of the maximum feature value. 
+SAMPLE_SIGNAL: "data/raw/female_scCells.txt" # Path to file file with list of samples to which signal should be applied. One row per sample. No header.
+FEATURE_SIGNAL: "data/raw/chrX_ensemblID.txt" # Path to file file with list of features to which signal should be applied. One row per feature. No header.

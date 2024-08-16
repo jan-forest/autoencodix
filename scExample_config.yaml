@@ -1,0 +1,86 @@
+# DATA DEFINITIONS ------------------------------------------------------------
+# -----------------------------------------------------------------------------
+DATA_TYPE: # TODO This variable specifies the details for each data type.
+# if you don't use a data type, just comment it out, or delete it
+  RNA:
+    FILE_RAW: "scRNA_human_cortex_formatted.parquet" # TODO your file name here. Standard is parquet format. DELIM-based files can be provided and should have file extension: "csv","tsv" or "txt".
+    TYPE: "NUMERIC" # TODO (your data type here) MIXED, IMG, NUMERIC and ANNOTATION are possible
+    SCALING: "Standard" # TODO (your scaling method here) NoScaler, MinMax, Standard, Robust, MaxAbs, are possilbe. Be sure to make this consistent with your loss function i.e. BCE and MinMax
+    FILTERING: "Var" # SHOULDDO NoFilt, NonZeroVar, Var, MAD, Corr, Var+Corr are possible, Var is recommended because of faster computation
+  METH:
+    FILE_RAW: "scATAC_human_cortex_formatted.parquet"
+    TYPE: "NUMERIC"
+    SCALING: "Standard"
+    FILTERING: "Var"
+  ANNO:
+    FILE_RAW: "scATAC_human_cortex_clinical_formatted.parquet"
+    TYPE: "ANNOTATION" ## ANNOTATION files will be ignored as data modality in AE
+
+
+K_FILTER: 1000 # SHOULDDO Number of features after filtering per data modality
+
+## Model and Training --------------------------------------------------------
+# ----------------------------------------------------------------------------
+TRAIN_TYPE: "train" # SHOULDDO train or tune are possible
+MODEL_TYPE: "ontix" #SHOULDO which autoencoder to use: vanillix, varix, stackix, ontix or x-modalix
+BETA: 0.1 # OPTIONAL float that adds a weight to the KL divergence or MMD loss of variational autoencoder
+
+LATENT_DIM_FIXED: 2 # SHOULDDO number of neurons in latent dimenion (all integer values are possible)
+BATCH_SIZE: 512 # SHOULDDO (all integer values are possible, depending on your hardware and data size)
+EPOCHS: 300 # SHOULDDO (all integer values are possible)
+LR_FIXED: 0.0005 # SHOULDDO Learning Rate for training (all float values are possible)
+VAE_LOSS: "KL" # SHOULDDO  loss function for VAE to fit standard normal distribution (KL or MMD)
+RECONSTR_LOSS: "MSE" # SHOULDDO (BCE or MSE)
+
+PREDICT_SPLIT: "all" # SHOULDDO data split the trainied model uses to generate latent space (all, train, test, valid are possible) default is all
+
+# # Ontix specific
+NON_ONT_LAYER: 0 # OPTIONAL Specify additional layer for ontix if should LATENT_DIM_FIXED < Ontology Dimension
+FILE_ONT_LVL1: "full_ont_lvl1_ensembl_reactome.txt" # OPTIONAL Mandotory for ontix; LVL1 specifies relationship of features and first ontology level in sparse decoder
+FILE_ONT_LVL2: "full_ont_lvl2_reactome.txt" # OPTIONAL for ontix; LVL2 specifies relationship of first ontology level and a second level (dim(lvl1) > dim(lvl2)) in sparse decoder
+
+
+# # X-modalix specific
+# TRANSLATE: "KLIMBIM_to_ANDERERKLIMBIM" # TODO, TRAIN_TYPE=translate, when <FROMDATA>_to_<TODATA>
+# GAMMA: 5 # OPTIONAL weighs the latent space classifier loss for th translation case
+# DELTA_PAIR: 5 # OPTIONAL weigths for pairing loss term (xmodalix)
+# DELTA_CLASS: 5 # OPTIONAL weigths for class/supervision loss term (xmodalix)
+# PRETRAIN_TARGET_MODALITY: null #SHOULDDO For `x-modalix` VAE's can be pretrained before latent spaces will be aligned. Options are pretrain_image or gamma_anneal or null to switch off pretraining.
+# ANNEAL_PRETRAINING: False #OPTIONAL (True or False) indicates if beta annealing should be used in pretraining target modality or while using gamma annealing in pretraining
+# PRETRAIN_EPOCHS: 100 #OPTIONAL (all integer values are possible) number of epochs of gamma_anneal or pretrain_image (additional to EPOCHS) (set 0 if not wanted)
+# CLASS_PARAM: "CANCER_TYPE_ACRONYM" #OPTIONAL Annotation parameter (str) to which the latent space is aligned for the MODEL_TYPE "x-modalix" and is a column as defined in the Annotation DATA_TYPE. Set to null if not wanted.
+
+# OPTUNA TUNING VARS-----------------------------------------------------------
+# -----------------------------------------------------------------------------
+# LAYERS_LOWER_LIMIT: 2 # OPTIONAL  minumum number of layers for hyperparamter tuning(all integer values are possible)
+# LAYERS_UPPER_LIMIT: 5 # OPTIONAL maximum number of layers for hyperparamter tuning(all integer values are possible)
+# LR_LOWER_LIMIT: 0.0001 # OPTIONAL minimum learning rate for hyperparamter tuning(all float values are possible)
+# LR_UPPER_LIMIT: 0.05 # OPTIONAL maximum learning rate for hyperparamter tuning(all float values are possible)
+# DROPOUT_LOWER_LIMIT: 0.00 # OPTIONAL minimum dropout rate for hyperparamter tuning(all float values are possible)
+# DROPOUT_UPPER_LIMIT: 0.50 # OPTIONAL maximum dropout rate for hyperparamter tuning(all float values are possible)
+# OPTUNA_TRIALS: 40 # OPTIONAL number of trials for hyperparamter tuning(all integer values are possible)
+
+
+# EVALUATION and VISUALIZATION ------------------------------------------------
+# -----------------------------------------------------------------------------
+DIM_RED_METH: "UMAP" # OPTIPNAL PCA or UMAP or TSNE
+CLUSTER_ALG: "KMeans" # OPTIONAL KMeans or HDBScan
+CLUSTER_N: 32 # OPTIONAL Number of clusters for KMeans
+MIN_CLUSTER_N: 20 # OPTIONAL Minimal number of samples per cluster as crucial parameter for HDBSCAN
+CLINIC_PARAM:
+- "author_cell_type"
+- "age_group"
+- "sex"
+ML_TYPE: "Auto-detect" # TODO For the given CLINIC_PARAM either regression or classification ML tasks will be performed. If auto-detect, non-string parameters will be assumed to be regression tasks.
+# ML_TYPE: # TODO manual specification if given CLINIC_PARAM are either regression or classification (recommended). Must be similar entries as CLINIC_PARAM
+#   CANCER_TYPE: "classification" # OPTIONAL classification or regression
+#   TMB_NONSYNONYMOUS: "regression" # OPTIONAL classification or regression
+ML_ALG: # OPTIONAL which machine learning algorithms should be used for evaluation, Linear, RF, SVM are possible
+  - Linear
+  - RF
+ML_SPLIT: "use-split" # OPTIONAL "use-split" or "CV-on-all-data"
+ML_TASKS: # OPTIONAL which dimension reduction methods should be used for the ml task, Latent, UMAP, PCA, RandomFeature are possible
+  - Latent
+  - PCA
+
+RUN_ID: scExample

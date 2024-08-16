@@ -1,0 +1,6 @@
+data/
+reports/
+venv-gallia/
+src.egg-info
+.*
+!.gitignore
