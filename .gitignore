@@ -1,6 +1,8 @@
 data/
 !src/data
 reports/
+models/
+!src/models
 venv-gallia/
 src.egg-info
 .*
