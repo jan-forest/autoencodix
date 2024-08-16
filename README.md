@@ -20,8 +20,26 @@ Please, use also this to cite our work when using our framework.
  
 
 # Table of contents
-[[_TOC_]]
   
+- [AUTOENCODIX](#autoencodix)
+- [Table of contents](#table-of-contents)
+  * [1 INSTALLATION](#1-installation)
+    + [1.1 Linux-based](#11-linux-based)
+    + [1.2 Windows-based](#12-windows-based)
+    + [1.3 Mac OS](#13-mac-os)
+    + [1.4 HPC Cluster](#14-hpc-cluster)
+  * [2 Getting started](#2-getting-started)
+    + [2.1 First steps and tutorials](#21-first-steps-and-tutorials)
+    + [2.2 Other pipeline examples](#22-other-pipeline-examples)
+    + [2.3 Working with own data and config files](#23-working-with-own-data-and-config-files)
+  * [3 Run and edit pipeline](#3-run-and-edit-pipeline)
+  * [4 Project Organization](#4-project-organization)
+  * [5 Output files and visualization](#5-output-files-and-visualization)
+  * [6 Running with GPU support and parallelization on HPC](#6-running-with-gpu-support-and-parallelization-on-hpc)
+  * [7 Archives old runs](#7-archives-old-runs)
+  * [8 References](#8-references)
+  * [9 FAQ](#9-faq)
+    + [Reproducibility and CUBLAS_WORKSPACE_CONFIG](#reproducibility-and-cublas-workspace-config)
   
 
 ## 1 INSTALLATION
