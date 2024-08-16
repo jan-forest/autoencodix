@@ -173,6 +173,26 @@ After you have run the pipeline including `make data` and you want to make chang
 ## 4 Project Organization
 
 ```
+|-- data
+|   |-- interim
+|   |-- processed
+|   |   |-- <RUN_ID>
+|   |   |   |-- <data1.txt>
+|   |   |   |-- <data2.txt>
+|   |   |   `-- sample_split.txt
+|   |-- raw
+|   |   |-- <raw_data.txt>
+|   |   |-- images
+|   |   |   |---image_mappings.txt
+|   |   |   |---image1.jpg
+|-- models
+|   |-- <RUN_ID>
+|       `-- <model.pt>
+|-- reports
+|   |-- <RUN_ID>
+|   |    |--<latent_space.txt>
+|   |    |--figures
+|   |       `--<figure1.png>
 |-- src
 |   |-- data
 |   |   |-- format_sc_h5ad.py
