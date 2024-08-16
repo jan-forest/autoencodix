@@ -1,5 +1,4 @@
 #!/bin/bash
-
 mkdir -p data/raw
 if [ -f "data/raw/data_clinical_formatted.parquet" ]; then
 	echo "TCGA data detected in data/raw. Download will be skipped"

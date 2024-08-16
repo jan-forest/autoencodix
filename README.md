@@ -121,9 +121,14 @@ First time users should check our tutorial notebooks for more details on those s
 ### 2.2 Other pipeline examples
 
 Additional to tutorial notebooks, we provide example configs of main features of `AUTOENCODIX`:
-- Multi-modal VAE training on TCGA pan-cancer data via `run_TCGAexample.sh` including hyperparameter tuning with [Optuna](https://github.com/optuna/optuna)
-- Training of an ontology-based VAE `ontix` on single-cell data via `run_scExample.sh`. 
-
+- Multi-modal VAE training on TCGA pan-cancer data `run_TCGAexample.sh` including hyperparameter tuning with [Optuna](https://github.com/optuna/optuna) via:
+```
+> ./bash-runs/run_TCGAexample.sh 
+```
+- Training of an ontology-based VAE `ontix` on single-cell data via: 
+```
+> ./bash-runs/run_SingleCellExample.sh 
+```
 All scripts will download the data, create necessary `yaml`-configs and run the pipeline for you. Results and visualizations can be found under `reports/<run_id>/`.
  
 
@@ -139,7 +144,7 @@ We provide a sample config in `./_config.yaml`. Copy and rename this file:
 
 ```
 
-cp ./_config.yaml ./<RUN_ID>_config.yaml
+> cp ./_config.yaml ./<RUN_ID>_config.yaml
 
 ```
 Each entry in the `_config.yaml` has an inline comment that indicates whether you:
@@ -173,6 +178,10 @@ After you have run the pipeline including `make data` and you want to make chang
 ## 4 Project Organization
 
 ```
+|-- bash-runs
+|   |-- run_slurm.sh
+|   |-- run_SingleCellExample.sh
+|   |-- run_TCGAexample.sh
 |-- data
 |   |-- interim
 |   |-- processed
@@ -235,9 +244,6 @@ After you have run the pipeline including `make data` and you want to make chang
 |-- _config.yaml
 |-- clean.sh
 |-- requirements.txt
-|-- run.sh
-|-- run_SingleCellExample.sh
-|-- run_TCGAexample.sh
 |-- scExample_config.yaml
 |-- setup.py
 |-- test_environment.py
@@ -256,10 +262,10 @@ Output can be found here:
 ## 6 Running with GPU support and parallelization on HPC
 The whole pipeline will automatically run on GPUs if GPUs are available (via `torch.cuda.is_available()` and using device `cuda:0`).
 
-See our `run.sh` script for a sample slurm configuration with GPU. To run on an HPC cluster, you need to adjust the `run.sh` script with your paths. and then start the script like:
+See our `run_slurm.sh` script for a sample slurm configuration with GPU. To run on an HPC cluster, you need to adjust the `run_slurm.sh` script with your paths. and then start the script like:
 
 ```
-bash ./run.sh <you-run-id>
+> bash ./bash-runs/run_slurm.sh <you-run-id>
 ```
 This will send the sbatch script to your cluster. This way you can also easily parallelize multiple runs, by generating multiple config files.
 
@@ -273,7 +279,7 @@ We provide a clean script, `clean.sh`. The script either archives or deletes all
 - reports
 Run by:
 ```
-./clean.sh -r <ID1,ID2,ID3,...,IDn>
+> ./clean.sh -r <ID1,ID2,ID3,...,IDn>
 ```
 will archive all output and interim data under `archive` as `<run_id>.zip`-files. If you want to delete, use the option `-d`. If you want to keep only the report folder and delete or archive the other, use the option `-k`.
 
@@ -306,6 +312,6 @@ RuntimeError: Deterministic behavior was enabled with either `torch.use_determin
 ```
 You need to run the following in your terminal before running our pipeline: 
 ```
-export CUBLAS_WORKSPACE_CONFIG=:16:8
+> export CUBLAS_WORKSPACE_CONFIG=:16:8
 ```
 

@@ -1,5 +1,4 @@
 #!/bin/bash
-
 mkdir -p data/raw
 if [ -f "data/raw/scATAC_human_cortex_formatted.parquet" ]; then
 	echo "Single Cell human cortex data detected in data/raw. Download will be skipped"
