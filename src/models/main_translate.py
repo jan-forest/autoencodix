@@ -18,7 +18,7 @@ from src.utils.utils import (
     get_model,
     loss_function,
 )
-from src.utils.utils_basic import annealer, get_annealing_epoch, get_device
+from src.utils.utils_basic import annealer, get_annealing_epoch
 
 global g
 g = torch.Generator()
@@ -35,6 +35,13 @@ def pretrain_img(loaders, model, cfg, img_direction):
 
     """
     device = get_device(cfg)
+    if cfg["FIX_RANDOMNESS"] == "all" or cfg["FIX_RANDOMNESS"] == "training":
+        torch.use_deterministic_algorithms(True)
+        torch.manual_seed(cfg["GLOBAL_SEED"])
+        torch.cuda.manual_seed(cfg["GLOBAL_SEED"])
+        torch.cuda.manual_seed_all(cfg["GLOBAL_SEED"])
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
     losses = []
     valid_losses = []
     model.to(device)
@@ -460,19 +467,30 @@ def log_training_stats(epoch, train_loss_dict, valid_loss_dict, logger):
     for (train_key, train_value), (valid_key, valid_value) in zip(
         train_loss_dict.items(), valid_loss_dict.items()
     ):
-        logger.debug(
+        logger.info(
             f"Epoch: {epoch}, {train_key}: {train_value[-1]}, {valid_key}: {valid_value[-1]}"
         )
 
 
 def train_translate(cfg, logger):
     """Train two autoencoder models and translate between them."""
+
     device = get_device(cfg)
+    if cfg["FIX_RANDOMNESS"] == "all" or cfg["FIX_RANDOMNESS"] == "training":
+        torch.use_deterministic_algorithms(True)
+        torch.manual_seed(cfg["GLOBAL_SEED"])
+        torch.cuda.manual_seed(cfg["GLOBAL_SEED"])
+        torch.cuda.manual_seed_all(cfg["GLOBAL_SEED"])
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
     logger.info("Training translate model")
     models, loaders = get_model_and_loaders(cfg, logger)
     from_input_key, to_input_key = cfg["TRANSLATE"].split("_to_")
     pretrained = False
-    if cfg["PRETRAIN_TARGET_MODALITY"] == "pretrain_image":
+    if (
+        cfg["PRETRAIN_TARGET_MODALITY"] == "pretrain_image"
+        and cfg["PRETRAIN_EPOCHS"] > 0
+    ):
         logger.info("Pretraining image model")
         if cfg["DATA_TYPE"][from_input_key]["TYPE"] == "IMG":
             logger.info("Pretraining 'from' IMG model")
@@ -494,12 +512,6 @@ def train_translate(cfg, logger):
                 models["to"] = pretrain_res["model"]
     for model in models.values():
         model.to(device)
-    if cfg["FIX_RANDOMNESS"] == "all" or cfg["FIX_RANDOMNESS"] == "training":
-        logger.debug("fixing randomness")
-        torch.manual_seed(cfg["GLOBAL_SEED"])  ## -> effects also model weight init
-        torch.use_deterministic_algorithms(True)
-        g.manual_seed(cfg["GLOBAL_SEED"])
-
 
     latent_clf = LatentSpaceClassifier(
         n_hidden=cfg["LATENT_DIM_FIXED"],
@@ -617,7 +629,7 @@ def train_translate(cfg, logger):
         in_pretraining = False
         if cfg["PRETRAIN_TARGET_MODALITY"] == "gamma_anneal":
             in_pretraining = epoch < cfg["PRETRAIN_EPOCHS"]
-        logger.debug(f" in_pretraining: {in_pretraining}")
+        logger.info(f" in_pretraining: {in_pretraining}")
         for k, _ in train_loss_stats.items():
             train_loss_stats[k].append(epoch_loss_stats[k])
         # VALIDATION ROUND --------------------------------------------------------
@@ -767,17 +779,17 @@ def train_translate(cfg, logger):
             "valid_class_loss": class_epoch_lossv / valid_size,
             "valid_total_loss": total_epoch_lossv / valid_size,
         }
-        logger.debug(f"Epoch: {epoch}")
-        logger.debug(f"Valid losses: {valid_epoch_stats}")
+        logger.info(f"Epoch: {epoch}")
+        logger.info(f"Valid losses: {valid_epoch_stats}")
         total_epoch_lossv = total_epoch_lossv / valid_size
-        logger.debug(f"Total valid loss: {total_epoch_lossv}")
+        logger.info(f"Total valid loss: {total_epoch_lossv}")
 
         for k, _ in valid_loss_stats.items():
             valid_loss_stats[k].append(valid_epoch_stats[k])
         if (total_epoch_lossv < best_total_lossv) and not in_pretraining:
-            logger.debug(f"New best model found at epoch {epoch}. Saving at checkpoint")
+            logger.info(f"New best model found at epoch {epoch}. Saving at checkpoint")
             best_total_lossv = total_epoch_lossv
-            logger.debug(f"Best total loss: {best_total_lossv}")
+            logger.info(f"Best total loss: {best_total_lossv}")
             # best_paths = save_best_model(cfg=cfg, models=models, epoch=i, logger=logger)
             best_to_model, best_from_model = (
                 copy.deepcopy(models["to"]),
@@ -785,8 +797,6 @@ def train_translate(cfg, logger):
             )
         if (epoch % checkpoint_intervall == 0) and (best_total_lossv < best_last_cpt):
             logger.info(f"Checkpointing best model at epoch {epoch}")
-            logger.info(f"Valid losses: {valid_epoch_stats}")
-            logger.info(f"Total valid loss: {total_epoch_lossv}")
             log_training_stats(
                 epoch=epoch,
                 train_loss_dict=train_loss_stats,
@@ -872,6 +882,13 @@ def predict_translate(cfg, logger):
     from_model, to_model = load_prediction_models(cfg=cfg, loader=predict_loader)
     to_model.eval(), from_model.eval()
     device = get_device(cfg)
+    if cfg["FIX_RANDOMNESS"] == "all":
+        torch.use_deterministic_algorithms(True)
+        torch.manual_seed(cfg["GLOBAL_SEED"])
+        torch.cuda.manual_seed(cfg["GLOBAL_SEED"])
+        torch.cuda.manual_seed_all(cfg["GLOBAL_SEED"])
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
     to_model.to(device), from_model.to(device)
     from_latent = []
     to_latent = []
@@ -1032,7 +1049,9 @@ def predict_translate(cfg, logger):
         if not os.path.exists(os.path.join("reports", cfg["RUN_ID"], "IMGS")):
             os.makedirs(os.path.join("reports", cfg["RUN_ID"], "IMGS"), exist_ok=True)
         if not os.path.exists(os.path.join("reports", cfg["RUN_ID"], "IMGS_IMG")):
-            os.makedirs(os.path.join("reports", cfg["RUN_ID"], "IMGS_IMG"), exist_ok=True)
+            os.makedirs(
+                os.path.join("reports", cfg["RUN_ID"], "IMGS_IMG"), exist_ok=True
+            )
         for i in range(translation.shape[0]):
 
             filename = f"{from_id_list[i]}.{file_ext}"
