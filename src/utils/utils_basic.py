@@ -55,18 +55,9 @@ def read_ont_file(file_path, sep="\t"):
     return ont_dic
 
 
-def get_device(cfg, verbose=False):
+def get_device(verbose=False):
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
 
-    # if cfg["FIX_RANDOMNESS"] == "all":
-    #     torch.use_deterministic_algorithms(True)
-    #     torch.manual_seed(cfg["GLOBAL_SEED"])
-    #     torch.cuda.manual_seed(cfg["GLOBAL_SEED"])
-    #     torch.cuda.manual_seed_all(cfg["GLOBAL_SEED"])
-    #     torch.backends.cudnn.deterministic = True
-    #     torch.backends.cudnn.benchmark = False
-    #     if verbose:
-    #         print("Randomness fixed for all devices")
     if verbose:
         print(f"Device: {device}")
     return device

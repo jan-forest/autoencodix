@@ -429,7 +429,7 @@ def compute_kernel(cfg, x, y):
         kernel - (torch.tensor): kernel matrix (x.shape[0]  y.shape[0])
 
     """
-    device = get_device(cfg, False)
+    device = get_device(verbose=False)
     x_size = x.size(0)
     y_size = y.size(0)
     dim = torch.tensor(x.size(1)).to(device)
@@ -578,7 +578,7 @@ def get_latent_space(cfg, model, data_loader, recon_calc=False, save_file=True):
     latent_space = []
     recon_x = []
     id_list = []
-    device = get_device(cfg, verbose=False)
+    device = get_device(verbose=False)
     model.to(device)
     model.eval()
     for batch, index in data_loader:
@@ -812,7 +812,7 @@ def train_ae_model(
                 "No ANNOTATION data type found. Plotting latent without param."
             )
 
-    device = get_device(cfg)
+    device = get_device()
     if cfg["FIX_RANDOMNESS"] == "all" or cfg["FIX_RANDOMNESS"] == "training":
         torch.use_deterministic_algorithms(True)
         torch.manual_seed(cfg["GLOBAL_SEED"])

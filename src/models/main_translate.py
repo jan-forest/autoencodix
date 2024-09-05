@@ -34,7 +34,7 @@ def pretrain_img(loaders, model, cfg, img_direction):
         dict: with model, train and valid losses as keys
 
     """
-    device = get_device(cfg)
+    device = get_device()
     if cfg["FIX_RANDOMNESS"] == "all" or cfg["FIX_RANDOMNESS"] == "training":
         torch.use_deterministic_algorithms(True)
         torch.manual_seed(cfg["GLOBAL_SEED"])
@@ -475,7 +475,7 @@ def log_training_stats(epoch, train_loss_dict, valid_loss_dict, logger):
 def train_translate(cfg, logger):
     """Train two autoencoder models and translate between them."""
 
-    device = get_device(cfg)
+    device = get_device()
     if cfg["FIX_RANDOMNESS"] == "all" or cfg["FIX_RANDOMNESS"] == "training":
         torch.use_deterministic_algorithms(True)
         torch.manual_seed(cfg["GLOBAL_SEED"])
@@ -629,7 +629,7 @@ def train_translate(cfg, logger):
         in_pretraining = False
         if cfg["PRETRAIN_TARGET_MODALITY"] == "gamma_anneal":
             in_pretraining = epoch < cfg["PRETRAIN_EPOCHS"]
-        logger.info(f" in_pretraining: {in_pretraining}")
+        logger.debug(f" in_pretraining: {in_pretraining}")
         for k, _ in train_loss_stats.items():
             train_loss_stats[k].append(epoch_loss_stats[k])
         # VALIDATION ROUND --------------------------------------------------------
@@ -779,17 +779,17 @@ def train_translate(cfg, logger):
             "valid_class_loss": class_epoch_lossv / valid_size,
             "valid_total_loss": total_epoch_lossv / valid_size,
         }
-        logger.info(f"Epoch: {epoch}")
-        logger.info(f"Valid losses: {valid_epoch_stats}")
+        logger.debug(f"Epoch: {epoch}")
+        logger.debug(f"Valid losses: {valid_epoch_stats}")
         total_epoch_lossv = total_epoch_lossv / valid_size
-        logger.info(f"Total valid loss: {total_epoch_lossv}")
+        logger.debug(f"Total valid loss: {total_epoch_lossv}")
 
         for k, _ in valid_loss_stats.items():
             valid_loss_stats[k].append(valid_epoch_stats[k])
         if (total_epoch_lossv < best_total_lossv) and not in_pretraining:
-            logger.info(f"New best model found at epoch {epoch}. Saving at checkpoint")
+            logger.debug(f"New best model found at epoch {epoch}. Saving at checkpoint")
             best_total_lossv = total_epoch_lossv
-            logger.info(f"Best total loss: {best_total_lossv}")
+            logger.debug(f"Best total loss: {best_total_lossv}")
             # best_paths = save_best_model(cfg=cfg, models=models, epoch=i, logger=logger)
             best_to_model, best_from_model = (
                 copy.deepcopy(models["to"]),
@@ -881,7 +881,7 @@ def predict_translate(cfg, logger):
     )
     from_model, to_model = load_prediction_models(cfg=cfg, loader=predict_loader)
     to_model.eval(), from_model.eval()
-    device = get_device(cfg)
+    device = get_device()
     if cfg["FIX_RANDOMNESS"] == "all":
         torch.use_deterministic_algorithms(True)
         torch.manual_seed(cfg["GLOBAL_SEED"])
