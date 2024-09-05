@@ -1,0 +1,203 @@
+.PHONY: clean data lint requirements sync_data_to_s3 sync_data_from_s3
+.SILENT:
+
+#################################################################################
+# GLOBALS                                                                       #
+#################################################################################
+
+PROJECT_DIR := $(shell powershell -Command "(Get-Item .).FullName")
+BUCKET = [OPTIONAL] your-bucket-for-syncing-data (do not include 's3://')
+PROFILE = default
+PROJECT_NAME = venv-gallia
+PYTHON_INTERPRETER = python
+RUN_ID = $(RUN_ID)
+OLD_RUN_ID = $(OLD_RUN_ID)
+PYV = $(shell $(PYTHON_INTERPRETER) -c "import sys;t='{v[0]}.{v[1]}'.format(v=list(sys.version_info[:2]));sys.stdout.write(t)")
+
+# Function to convert version numbers to a numeric representation
+version = $(shell powershell -Command "[int]('$1' -replace '\.', '')")
+PYV_FORMATED = $(call version,$(PYV))
+MIN_PYV = "3.10"
+MIN_PYV_FORMATED = $(call version,$(MIN_PYV))
+
+ifeq (,$(shell powershell -Command "conda --version"))
+HAS_CONDA=False
+else
+HAS_CONDA=True
+endif
+
+#################################################################################
+# COMMANDS                                                                      #
+#################################################################################
+
+## Install Python Dependencies
+requirements: test_environment
+	$(PYTHON_INTERPRETER) -m pip install -e .
+	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
+	powershell -Command "New-Item -ItemType File -Force src/utils/__init__.py"
+	powershell -Command "New-Item -ItemType File -Force src/data/__init__.py"
+	powershell -Command "New-Item -ItemType File -Force src/features/__init__.py"
+	powershell -Command "New-Item -ItemType File -Force src/models/__init__.py"
+	powershell -Command "New-Item -ItemType File -Force src/models/tuning/__init__.py"
+	powershell -Command "New-Item -ItemType File -Force src/visualization/__init__.py"
+
+config:
+	@echo "RUN_ID: $(RUN_ID)"
+	@powershell -Command "New-Item -ItemType Directory -Force -Path data/processed"
+	@powershell -Command "New-Item -ItemType Directory -Force -Path data/raw"
+	@powershell -Command "New-Item -ItemType Directory -Force -Path data/raw/images"
+	@powershell -Command "New-Item -ItemType Directory -Force -Path reports"
+	@powershell -Command "New-Item -ItemType Directory -Force -Path reports/figures"
+	@powershell -Command "New-Item -ItemType Directory -Force -Path models"
+	@powershell -Command "New-Item -ItemType Directory -Force -Path models/tuning/$(RUN_ID)"
+	@powershell -Command "New-Item -ItemType Directory -Force -Path data/interim/$(RUN_ID)"
+	@powershell -Command "New-Item -ItemType Directory -Force -Path data/processed/$(RUN_ID)"
+	@powershell -Command "New-Item -ItemType Directory -Force -Path models/$(RUN_ID)"
+	@powershell -Command "New-Item -ItemType Directory -Force -Path models/tuned/$(RUN_ID)"
+	@powershell -Command "New-Item -ItemType Directory -Force -Path reports/$(RUN_ID)"
+	@powershell -Command "New-Item -ItemType Directory -Force -Path reports/$(RUN_ID)/figures"
+
+	@echo "Copying $(RUN_ID)_config.yaml to reports\$(RUN_ID)..."
+	@if exist $(RUN_ID)_config.yaml ( \
+		copy /Y $(RUN_ID)_config.yaml reports\$(RUN_ID)\$(RUN_ID)_config.yaml \
+	) else ( \
+		echo $(RUN_ID)_config.yaml does not exist. Please proivde the file in the project root directory. \
+	)
+
+	@echo "done config"
+
+
+
+
+
+
+join_format_tcga: config
+	powershell -Command "if (Test-Path 'data/raw/data_clinical_formatted.parquet') { \
+		Write-Host 'Formatted TCGA data detected. Join and format will be skipped. Remove data files in data/raw to avoid skipping.'; \
+	} else { \
+		$(PYTHON_INTERPRETER) src/data/join_tcga.py $(RUN_ID); \
+		$(PYTHON_INTERPRETER) src/data/format_tcga.py $(RUN_ID); \
+		Write-Host 'Done joining and formatting TCGA data'; \
+	}"
+
+
+## Calculate the PI score
+pi_score:
+	cmd /C if exist data/raw/PIscore_matrix_withCNA.parquet ( \
+		echo "PI-Score already prepared. Skipping prep." \
+	) else ( \
+		powershell -Command "New-Item -ItemType Directory -Force data/external" && \
+		powershell -Command "Invoke-WebRequest -Uri https://cloud.scadsai.uni-leipzig.de/index.php/s/i2FFoi2jojBfwc4/download/piscore_external_data.zip -OutFile data/external/piscore_external_data.zip" && \
+		powershell -Command "Expand-Archive -Path data/external/piscore_external_data.zip -DestinationPath data/external" && \
+		del data/external/piscore_external_data.zip && \
+		$(PYTHON_INTERPRETER) src/features/get_PIscores.py $(RUN_ID) && \
+		echo "Done calculating PI score" && \
+		rmdir /s /q data/external \
+	)
+
+combiscore_MUT_CNA:
+	cmd /C if exist data/raw/data_combi_MUT_CNA_formatted.parquet ( \
+		echo "Combi-Score already prepared. Skipping prep." \
+	) else ( \
+		powershell -Command "New-Item -ItemType Directory -Force data/external" && \
+		powershell -Command "Invoke-WebRequest -Uri https://cloud.scadsai.uni-leipzig.de/index.php/s/i2FFoi2jojBfwc4/download/piscore_external_data.zip -OutFile data/external/piscore_external_data.zip" && \
+		powershell -Command "Expand-Archive -Path data/external/piscore_external_data.zip -DestinationPath data/external" && \
+		del data/external/piscore_external_data.zip && \
+		$(PYTHON_INTERPRETER) src/features/combine_MUT_CNA.py $(RUN_ID) && \
+		echo "Done calculating Combi-score score" && \
+		rmdir /s /q data/external \
+	)
+
+ontology_prep: config
+	cmd /C if exist data/raw/full_ont_lvl1_reactome.txt ( \
+		echo "Ontology already prepared. Skipping prep." \
+	) else ( \
+		powershell -Command "Invoke-WebRequest -Uri https://reactome.org/download/current/ReactomePathwaysRelation.txt -OutFile data/raw/ReactomePathwaysRelation.txt" && \
+		powershell -Command "Invoke-WebRequest -Uri https://reactome.org/download/current/NCBI2Reactome_All_Levels.txt -OutFile data/raw/NCBI2Reactome_All_Levels.txt" && \
+		powershell -Command "Invoke-WebRequest -Uri https://reactome.org/download/current/Ensembl2Reactome_All_Levels.txt -OutFile data/raw/Ensembl2Reactome_All_Levels.txt" && \
+		$(PYTHON_INTERPRETER) src/data/make_ontology.py $(RUN_ID) && \
+		del data/raw/ReactomePathwaysRelation.txt && \
+		del data/raw/NCBI2Reactome_All_Levels.txt && \
+		del data/raw/Ensembl2Reactome_All_Levels.txt \
+	) && \
+	echo "done ontology prep"
+
+
+# Format single cell data sets
+format_singlecell: config
+	$(PYTHON_INTERPRETER) src/data/format_sc_h5ad.py $(RUN_ID)
+
+## Make Dataset
+data: config
+	$(PYTHON_INTERPRETER) src/data/make_dataset.py $(RUN_ID)
+	echo "done data"
+
+data_only: config
+	$(PYTHON_INTERPRETER) src/data/make_dataset.py $(RUN_ID)
+	echo "done data only"
+
+model: data
+	$(PYTHON_INTERPRETER) src/models/train.py $(RUN_ID)
+	echo "Done training"
+
+model_only: config
+	$(PYTHON_INTERPRETER) src/models/train.py $(RUN_ID)
+	echo "Done training only"
+
+prediction: model
+	$(PYTHON_INTERPRETER) src/models/predict.py $(RUN_ID)
+	echo "Done predicting"
+
+prediction_only: config
+	$(PYTHON_INTERPRETER) src/models/predict.py $(RUN_ID)
+	echo "Done predicting only"
+
+visualize: prediction
+	$(PYTHON_INTERPRETER) src/visualization/visualize.py $(RUN_ID)
+	echo "Done visualizing"
+
+visualize_only: config
+	$(PYTHON_INTERPRETER) src/visualization/visualize.py $(RUN_ID)
+	echo "Done visualizing only"
+
+train_n_visualize: config
+	$(PYTHON_INTERPRETER) src/models/train.py $(RUN_ID)
+	$(PYTHON_INTERPRETER) src/models/predict.py $(RUN_ID)
+	$(PYTHON_INTERPRETER) src/visualization/visualize.py $(RUN_ID)
+	echo "Done training, predicting, and visualizing"
+
+ml_task: visualize
+	$(PYTHON_INTERPRETER) src/visualization/ml_task.py $(RUN_ID)
+	echo "Done ML task"
+
+ml_task_only: config
+	$(PYTHON_INTERPRETER) src/visualization/ml_task.py $(RUN_ID)
+	echo "Done ML task only"
+
+## Delete all compiled Python files
+clean:
+	powershell -Command "Get-ChildItem -Recurse -Include *.pyc, *__pycache__ | Remove-Item -Force"
+
+## Lint using flake8
+lint:
+	flake8 src
+
+
+## Set up python interpreter environment
+create_environment:
+	@echo ">>> Python version is $(PYV)"
+	@echo ">>> Checking your python version"
+	@echo ">>> Python version formatted is $(PYV_FORMATED)"
+	@echo ">>> Minimum Python version formatted is $(MIN_PYV_FORMATED)"
+	@cmd /C "if $(PYV_FORMATED) LSS $(MIN_PYV_FORMATED) ( \
+		echo ERROR: Python version must be at least $(MIN_PYV) && exit /B 1 \
+	) else ( \
+		echo Python version is good \
+	)"
+	@$(PYTHON_INTERPRETER) -m pip install virtualenv
+	@$(PYTHON_INTERPRETER) -m venv $(PROJECT_NAME)
+	@echo ">>> New virtualenv created. Activate with: $(PROJECT_NAME)\Scripts\activate"
+
+## Test python environment is setup correctly
+test_environment:
+	$(PYTHON_INTERPRETER) test_environment.py
