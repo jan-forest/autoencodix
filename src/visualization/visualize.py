@@ -44,6 +44,8 @@ from src.visualization.vis_crossmodalix import (
 sns.set_theme(font_scale=2)
 sns.set_style("white")
 sns_out_type = "png"
+from seaborn import axes_style
+so.Plot.config.theme.update(axes_style("whitegrid"))
 
 
 def make_optuna_plots(study, savefig=""):
@@ -287,7 +289,7 @@ def plot_latent_2D(
     return fig
 
 
-def plot_loss(cfg, loss_file_path, log_scale=False, figsize=(15, 10)):
+def plot_loss(cfg, loss_file_path, log_scale=False, figsize=(10, 8)):
     """
     Plots the loss (y-axis) over epochs (x-axis). If loss_file_path contains
     multiple columns, multiple loss types are plotted.
@@ -314,14 +316,14 @@ def plot_loss(cfg, loss_file_path, log_scale=False, figsize=(15, 10)):
             df["valid_vae_loss_anneal"] = df["valid_vae_loss"]
             if cfg["PRETRAIN_TARGET_MODALITY"] == "gamma_anneal":
                 df["valid_vae_loss_anneal"] = [
-                        loss
-                        * annealer(
-                            get_annealing_epoch(cfg, current_epoch=epoch),
-                            total_epoch=cfg["EPOCHS"],
-                            func=anneal_type,
-                        )
-                        for epoch, loss in zip(df["epoch"], df["valid_vae_loss"])
-                    ]
+                    loss
+                    * annealer(
+                        get_annealing_epoch(cfg, current_epoch=epoch),
+                        total_epoch=cfg["EPOCHS"],
+                        func=anneal_type,
+                    )
+                    for epoch, loss in zip(df["epoch"], df["valid_vae_loss"])
+                ]
                 df["valid_adversarial_loss_anneal"] = [
                     loss
                     * annealer(
@@ -339,6 +341,11 @@ def plot_loss(cfg, loss_file_path, log_scale=False, figsize=(15, 10)):
                     + df["valid_class_loss"]
                 )
             else:
+                df["valid_vae_loss_anneal"] = [
+                    loss * annealer(epoch, total_epoch=cfg["EPOCHS"], func=anneal_type)
+                    for epoch, loss in zip(df["epoch"], df["valid_vae_loss"])
+                ]
+
                 df["valid_total_loss_anneal"] = (
                     df["valid_vae_loss_anneal"]
                     + df["valid_recon_loss"]
@@ -346,6 +353,7 @@ def plot_loss(cfg, loss_file_path, log_scale=False, figsize=(15, 10)):
                     + df["valid_paired_loss"]
                     + df["valid_class_loss"]
                 )
+
         else:
             df["valid_vae_loss_anneal"] = [
                 loss * annealer(epoch, total_epoch=cfg["EPOCHS"], func=anneal_type)
@@ -431,6 +439,7 @@ def plot_loss(cfg, loss_file_path, log_scale=False, figsize=(15, 10)):
             f"figures/{path_key}loss_plot_relative.{sns_out_type}",
         ),
         bbox_inches="tight",
+        dpi=180
     )
 
     p_loss2 = (
@@ -453,6 +462,7 @@ def plot_loss(cfg, loss_file_path, log_scale=False, figsize=(15, 10)):
             f"figures/{path_key}loss_plot_absolute.{sns_out_type}",
         ),
         bbox_inches="tight",
+        dpi=180
     )
 
     return p_loss2
@@ -524,7 +534,6 @@ def plot_model_weights(model, filepath=""):
 def plot_cov_epoch(cfg, lat_coverage_epoch, figsize=(10, 8)):
 
     fig, ax1 = plt.subplots(1, 1, figsize=figsize)
-
     ax1.plot(lat_coverage_epoch["epoch"], lat_coverage_epoch["coverage"])
 
     ax1.set_xlabel("Epoch")
