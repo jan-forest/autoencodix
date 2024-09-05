@@ -16,7 +16,7 @@ from src.features.build_features import (
     ImageDataset,
     UnlabelledNumericDataset,
 )
-from src.models.models import ImageVAE, Ontix, Stackix, TranslateVAE, Vanillix, Varix
+from src.models.models import ImageVAE, Ontix, Stackix, Vanillix, Varix
 from src.models.tuning.models_for_tuning import (
     ImageVAETune,
     OntixTune,
@@ -210,10 +210,13 @@ def get_model(
     logger.debug(f"input_dim: {input_dim}")
 
     if cfg["FIX_RANDOMNESS"] == "all" or cfg["FIX_RANDOMNESS"] == "training":
-        torch.manual_seed(cfg["GLOBAL_SEED"])  ## -> effects also model weight init
         torch.use_deterministic_algorithms(True)
+        torch.manual_seed(cfg["GLOBAL_SEED"])
+        torch.cuda.manual_seed(cfg["GLOBAL_SEED"])
+        torch.cuda.manual_seed_all(cfg["GLOBAL_SEED"])
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
 
-        g.manual_seed(cfg["GLOBAL_SEED"])
 
     # Use latent dim from cfg if not stated otherwise
     if latent_dim == None:
@@ -417,7 +420,7 @@ def get_loader(cfg, path_key, split_type="train", tunetranslate=False):
     return dataloader
 
 
-def compute_kernel(x, y):
+def compute_kernel(cfg, x, y):
     """computes kernel for maximum mean discrepancy (MMD) calculation
     ARGS:
         x - (torch.tensor): input data
@@ -426,7 +429,7 @@ def compute_kernel(x, y):
         kernel - (torch.tensor): kernel matrix (x.shape[0]  y.shape[0])
 
     """
-    device = get_device(False)
+    device = get_device(cfg, False)
     x_size = x.size(0)
     y_size = y.size(0)
     dim = torch.tensor(x.size(1)).to(device)
@@ -448,7 +451,7 @@ def compute_mmd(true_samples, z, cfg):
 
     """
     logger = getlogger(cfg=cfg)
-    true_samples_kernel = compute_kernel(true_samples, true_samples)
+    true_samples_kernel = compute_kernel(cfg, true_samples, true_samples)
     z_kernel = compute_kernel(z, z)
     ztr_kernel = compute_kernel(true_samples, z)
     if cfg["LOSS_REDUCTION"] == "mean":
@@ -519,7 +522,7 @@ def loss_function(
         )
         vae_loss = (
             torch.tensor(0)
-            if model_type == "ae"
+            if model_type == "vanillix"
             else compute_mmd(true_samples=true_samples, z=z, cfg=cfg)
         )
     else:
@@ -575,7 +578,7 @@ def get_latent_space(cfg, model, data_loader, recon_calc=False, save_file=True):
     latent_space = []
     recon_x = []
     id_list = []
-    device = get_device(verbose=False)
+    device = get_device(cfg, verbose=False)
     model.to(device)
     model.eval()
     for batch, index in data_loader:
@@ -809,7 +812,15 @@ def train_ae_model(
                 "No ANNOTATION data type found. Plotting latent without param."
             )
 
-    device = get_device()
+    device = get_device(cfg)
+    if cfg["FIX_RANDOMNESS"] == "all" or cfg["FIX_RANDOMNESS"] == "training":
+        torch.use_deterministic_algorithms(True)
+        torch.manual_seed(cfg["GLOBAL_SEED"])
+        torch.cuda.manual_seed(cfg["GLOBAL_SEED"])
+        torch.cuda.manual_seed_all(cfg["GLOBAL_SEED"])
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+
     model.to(device)
     writer.add_custom_scalars(layout)
     # check if model is already trainedo
@@ -1053,7 +1064,9 @@ def train_ae_model(
         if epoch % checkpoint_interval == 0:
             writer.add_scalar("loss/valid", loss, epoch)
             writer.add_scalar(f"{loss_type}/loss/valid", loss, epoch)
-            logger.info(f" Valid Set: Epoch: {epoch} Loss: {'{:.2f}'.format(loss)}, r2: {'{:.2f}'.format(r2)}")
+            logger.info(
+                f" Valid Set: Epoch: {epoch} Loss: {'{:.2f}'.format(loss)}, r2: {'{:.2f}'.format(r2)}"
+            )
         losses_val.append(r_loss.detach())
         vae_losses_val.append(vae_loss.detach())
         r2_val.append(r2)
