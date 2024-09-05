@@ -67,13 +67,19 @@ Requirements:
   
 
 ### 1.2 Windows-based
-
 - to use the Makefile in Windows you need to install `make`
 
 - See https://linuxhint.com/run-makefile-windows/
 
-- now you can use the steps as explained for the Linux setup
+- Move `Makefile_windows` to `Makefile`
 
+- create environment with: `make create_environment`
+
+- activate env with `.\venv-gallia\Scripts\activate`
+
+- install requirements with `make requirements`
+
+- if you encounter problems, see the troubleshooting section at the [end](#9-faq)
   
 ### 1.3 Mac OS
 - clone this repo
@@ -303,6 +309,7 @@ Used data sets in notebooks and examples
 - MNIST handwritten digits via KERAS https://keras.io/api/datasets/mnist/ 
 - Images and proteom data of *C. elegans* embryogenesis https://doi.org/10.1038/s41592-021-01216-1 
 
+
 ## 9 FAQ
 
 ### Reproducibility and CUBLAS_WORKSPACE_CONFIG
@@ -312,6 +319,13 @@ RuntimeError: Deterministic behavior was enabled with either `torch.use_determin
 ```
 You need to run the following in your terminal before running our pipeline: 
 ```
-> export CUBLAS_WORKSPACE_CONFIG=:16:8
+export CUBLAS_WORKSPACE_CONFIG=:16:8
 ```
+
+### Windows make requirements
+If you run into the following error on Windows (Powershell):
+```
+error: Microsoft Visual C++ 14.0 or greater is required"
+```
+You can find solutions in this [thread](https://stackoverflow.com/questions/64261546/how-to-solve-error-microsoft-visual-c-14-0-or-greater-is-required-when-inst)
 
