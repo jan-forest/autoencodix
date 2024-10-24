@@ -49,7 +49,8 @@ Please, use also this to cite our work when using our framework.
 Follow the instructions depending on the machine you are working with. For familiarisation with the code, use your local machine on a small dataset as shown in our tutorials.
 
 Requirements:
-- Python >= 3.10
+- pip
+- Python == 3.10 (support for Python >=3.10 starting soon)
 - GPU recommended for larger datasets
   
 
