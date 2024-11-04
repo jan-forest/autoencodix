@@ -2,7 +2,7 @@ import logging
 import sys
 from math import exp
 import torch
-
+import numpy as np
 
 def getlogger(cfg):
     log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -143,3 +143,15 @@ def get_annealing_epoch(cfg, current_epoch):
             return current_epoch
         else:
             return current_epoch - cfg["PRETRAIN_EPOCHS"]
+
+def total_correlation(latent_space):
+    """ Function to compute the total correlation as described here (Equation2): https://doi.org/10.3390/e21100921
+        
+    Args:
+      latent_space - (pd.DataFrame): latent space with dimension sample vs. latent dimensions
+    Returns:
+      tc - (float): total correlation across latent dimensions
+    """
+    lat_cov = np.cov(latent_space.T)
+    tc = 0.5 * (np.sum(np.log(np.diag(lat_cov))) - np.linalg.slogdet(lat_cov)[1])
+    return tc

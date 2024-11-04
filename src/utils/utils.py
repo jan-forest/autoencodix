@@ -24,7 +24,7 @@ from src.models.tuning.models_for_tuning import (
     VanillixTune,
     VarixTune,
 )
-from src.utils.utils_basic import annealer, get_device, getlogger
+from src.utils.utils_basic import annealer, get_device, getlogger, total_correlation
 from src.visualization.visualize import dim_red, plot_latent_2D, plot_latent_simple
 
 # from math import exp
@@ -797,7 +797,7 @@ def train_ae_model(
             for data_type in cfg["DATA_TYPE"]
             if cfg["DATA_TYPE"][data_type]["TYPE"] == "ANNOTATION"
         ]
-        lat_coverage_epoch = pd.DataFrame(columns=["epoch", "coverage"])
+        lat_coverage_epoch = pd.DataFrame(columns=["epoch", "coverage", "total_correlation"])
         if len(anno_name) == 1:
 
             clin_data = pd.read_parquet(
@@ -925,6 +925,7 @@ def train_ae_model(
                 bins_per_dim, len(latent_space.columns)
             )
             lat_coverage["epoch"] = epoch
+            lat_coverage["total_correlation"] = total_correlation(latent_space=latent_space)
             lat_coverage_epoch = pd.concat(
                 [
                     lat_coverage_epoch,
