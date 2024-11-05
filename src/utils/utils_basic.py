@@ -79,6 +79,25 @@ def annealer(epoch_current, total_epoch, func="logistic-mid"):
         anneal_weight = 1
     else:
         match func:
+            case "5phase-constant":
+                intervals = 5
+
+                current_phase = int((epoch_current / total_epoch) * intervals)
+
+                match current_phase:
+                    case 0:
+                        anneal_weight = 0
+                    case 1:
+                        anneal_weight = 0.001
+                    case 2:
+                        anneal_weight = 0.01
+                    case 3: 
+                        anneal_weight = 0.1
+                    case 4:
+                        anneal_weight = 1
+                    case 5:
+                        anneal_weight = 1
+
             case "3phase-linear":
                 if epoch_current < total_epoch / 3:
                     anneal_weight = 0
