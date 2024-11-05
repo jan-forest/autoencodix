@@ -9,7 +9,7 @@ PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 BUCKET = [OPTIONAL] your-bucket-for-syncing-data (do not include 's3://')
 PROFILE = default
 PROJECT_NAME = venv-gallia
-PYTHON_INTERPRETER = python
+PYTHON_INTERPRETER = python3
 RUN_ID = $1
 OLD_RUN_ID = $2
 PYV = $(shell $(PYTHON_INTERPRETER) -c "import sys;t='{v[0]}.{v[1]}'.format(v=list(sys.version_info[:2]));sys.stdout.write(t)")
