@@ -81,7 +81,9 @@ def get_model_for_tuning(
                 case "vanillix":
                     return VanillixTune(trial, input_dim=input_dim, cfg=cfg)
                 case "stackix":
-                    return StackixTune(trial, input_dim=input_dim, cfg=cfg)
+                    return StackixTune(
+                        trial, input_dim=input_dim, cfg=cfg, latent_dim=latent_dim
+                    )
                 case "x-modalix":
                     return VarixTune(trial, input_dim=input_dim, cfg=cfg)
                 case "ontix":
@@ -108,7 +110,9 @@ def get_model_for_tuning(
                 case "vanillix":
                     return VanillixTune(trial, input_dim=input_dim, cfg=cfg)
                 case "stackix":
-                    return StackixTune(trial, input_dim=input_dim, cfg=cfg)
+                    return StackixTune(
+                        trial, input_dim=input_dim, cfg=cfg, latent_dim=latent_dim
+                    )
                 case "ontix":
                     model = OntixTune(
                         trial=trial,
@@ -128,11 +132,7 @@ def get_model_for_tuning(
                     )
         case "IMG":
             match model_type:
-                case "hvae":
-                    raise NotImplementedError(
-                        f" {model_type} not implemented for IMG data"
-                    )
-                case "vae":
+                case "stackix":
                     raise NotImplementedError(
                         f" {model_type} not implemented for IMG data"
                     )
@@ -140,7 +140,7 @@ def get_model_for_tuning(
                     raise NotImplementedError(
                         f" {model_type} not implemented for IMG data"
                     )
-                case "ae":
+                case "vanillix":
                     raise NotImplementedError(
                         f" {model_type} not implemented for IMG data"
                     )
@@ -171,7 +171,9 @@ def get_model_for_tuning(
                 case "vanillix":
                     return VanillixTune(trial, input_dim=input_dim, cfg=cfg)
                 case "stackix":
-                    return StackixTune(trial, input_dim=input_dim, cfg=cfg)
+                    return StackixTune(
+                        trial, input_dim=input_dim, cfg=cfg, latent_dim=latent_dim
+                    )
                 case "ontix":
                     model = OntixTune(
                         trial=trial,
@@ -186,7 +188,17 @@ def get_model_for_tuning(
                     raise NotImplementedError(
                         "model_type not known use 'vanillix', 'varix', 'stackix', 'ontix', 'x-modalix'"
                     )
-
+        case "CONCAT":
+            match model_type:
+                case "stackix":
+                    return StackixTune(
+                        trial, input_dim=input_dim, cfg=cfg, latent_dim=latent_dim
+                    )
+                case _:
+                    raise NotImplementedError(
+                        "model_type hast to be 'stackix' for CONCAT data type"
+                    )
+                    
         case _:
             raise ValueError(
                 "input type not supported: use NUMERIC, MIXED, IMG or COMBINED"
@@ -359,7 +371,16 @@ def get_model(
                     raise NotImplementedError(
                         "model_type hast to be 'stackix', 'varix, 'vanillix', 'ontix', translate, translate2"
                     )
-
+        case "CONCAT":
+            match model_type:
+                case "stackix":
+                    return Stackix(
+                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                    )
+                case _:
+                    raise NotImplementedError(
+                        "model_type hast to be 'stackix' for CONCAT data type"
+                    )
         case _:
             raise ValueError(
                 "input type not supported: use NUMERIC, MIXED, IMG or COMBINED"

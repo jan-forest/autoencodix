@@ -219,7 +219,7 @@ def build_vanilla(
 
 
 def build_stackix(cfg, data_path_keys, mode="load_trained", split="train"):
-    """Takes up to five different data modalities and trains a combined stackix
+    """Takes up to five different data modalities and trains a concatenated stackix
     and returns latent space and saves trained models
 
     ARGS:
@@ -231,7 +231,7 @@ def build_stackix(cfg, data_path_keys, mode="load_trained", split="train"):
                        'load_trained', 'load_tuned', 'train', 'tune'
         split - (str): indicator if the model should be trained on the train, valid or test split
     RETURNS:
-        combined_latent_space - (torch.tensor)
+        concatenated_latent_space - (torch.tensor)
 
     """
     logger = getlogger(cfg)
@@ -320,11 +320,11 @@ def build_stackix(cfg, data_path_keys, mode="load_trained", split="train"):
         )
         valid_latent_spaces.append(val_cur_latent_space)
         latent_spaces.append(cur_latent_space)
-        """ Get latent space for validatoin data, so we need to use eahc of the
-        modesl and get the latent space for the validation data """
+        """ Get latent space for validation data, so we need to use each of the
+        models and get the latent space for the validation data """
 
     # HVAE part ---------------------------------------------------------------
-    combined_name = "stackix_base_" + name_helper + cfg["RUN_ID"] + ".pt"
+    concat_name = "stackix_concat_" + name_helper + cfg["RUN_ID"] + ".pt"
     concated_latent_space = pd.concat(latent_spaces, axis=1)
     df = pd.DataFrame(concated_latent_space, index=dataloader.dataset.sample_ids)
     valid_concated_latent_space = pd.concat(valid_latent_spaces, axis=1)
@@ -332,7 +332,7 @@ def build_stackix(cfg, data_path_keys, mode="load_trained", split="train"):
         valid_concated_latent_space, index=validloader.dataset.sample_ids
     )
 
-    valid_temp_path_key = f"COMBINED-{name_helper}_VALID_LATENT_SPACE"
+    valid_temp_path_key = f"CONCAT-{name_helper}_VALID_LATENT_SPACE"
     # valid_df.to_csv(
     #     os.path.join(f"data/interim/{cfg['RUN_ID']}/valid_latent_space.txt"), sep=cfg['DELIM']
     # )
@@ -341,7 +341,7 @@ def build_stackix(cfg, data_path_keys, mode="load_trained", split="train"):
         os.path.join(f"data/interim/{cfg['RUN_ID']}/valid_latent_space.parquet")
     )
 
-    temp_path_key = f"COMBINED-{name_helper}_LATENT_SPACE"
+    temp_path_key = f"CONCAT-{name_helper}_LATENT_SPACE"
     # df.to_csv(
     #     os.path.join(f"data/interim/{cfg['RUN_ID']}/latent_space.txt"), sep=cfg['DELIM']
     # )
@@ -349,47 +349,47 @@ def build_stackix(cfg, data_path_keys, mode="load_trained", split="train"):
 
     cfg["DATA_TYPE"][temp_path_key] = {
         "FILE_PROC": os.path.join(f"data/interim/{cfg['RUN_ID']}/latent_space.parquet"),
-        "TYPE": "COMBINED",
+        "TYPE": "CONCAT",
     }
     cfg["DATA_TYPE"][valid_temp_path_key] = {
         "FILE_PROC": os.path.join(
             f"data/interim/{cfg['RUN_ID']}/valid_latent_space.parquet"
         ),
-        "TYPE": "COMBINED",
+        "TYPE": "CONCAT",
     }
 
-    combined_loader = get_loader(cfg, temp_path_key, split_type=split)
-    valid_combined_loader = get_loader(
+    concat_loader = get_loader(cfg, temp_path_key, split_type=split)
+    valid_concat_loader = get_loader(
         cfg,
-        f"COMBINED-{name_helper}_VALID_LATENT_SPACE",  # temp_path_key for valid
-        split_type="valid",  # does not matter for combined cases, since correct csv is loaded via temp_path_key
+        f"CONCAT-{name_helper}_VALID_LATENT_SPACE",  # temp_path_key for valid
+        split_type="valid",  # does not matter for concat cases, since correct csv is loaded via temp_path_key
     )
 
     if mode == "train" or mode == "load_trained":
         model = get_model(
             cfg,
-            combined_loader.dataset.input_size(),
+            concat_loader.dataset.input_size(),
             input_type=temp_path_key,
             model_type="stackix",
         )
         if mode == "train":
             model, _ = train_ae_model(
                 cfg,
-                combined_loader,
+                concat_loader,
                 model,
-                combined_name,
+                concat_name,
                 model_type="stackix",
-                valid_loader=valid_combined_loader,
+                valid_loader=valid_concat_loader,
             )
-            logger.info(f"(combined) model trained: {model}")
+            logger.info(f"(concatenated) model trained: {model}")
         elif mode == "load_trained":
             assert os.path.exists(
-                os.path.join("models", f"{cfg['RUN_ID']}", combined_name)
+                os.path.join("models", f"{cfg['RUN_ID']}", concat_name)
             )
             model.load_state_dict(
-                torch.load(os.path.join("models", f"{cfg['RUN_ID']}", combined_name))
+                torch.load(os.path.join("models", f"{cfg['RUN_ID']}", concat_name))
             )
-            logger.info(f"(combined) model loaded: {model}")
+            logger.info(f"(concatenated) model loaded: {model}")
         else:
             raise ValueError(
                 f"Mode: {mode} not recognized (load, load_trained, train, load_tuned)"
@@ -398,33 +398,33 @@ def build_stackix(cfg, data_path_keys, mode="load_trained", split="train"):
         if mode == "tune":
             model = find_best_model(
                 cfg,
-                model_name="tuned_" + combined_name,
+                model_name="tuned_" + concat_name,
                 path_key=temp_path_key,
-                dataloader=combined_loader,
-                valloader=valid_combined_loader,
+                dataloader=concat_loader,
+                valloader=valid_concat_loader,
                 model_type="stackix",
             )
-            logger.info(f"(combined) model tuned trained: {model}")
+            logger.info(f"(concatenated) model tuned trained: {model}")
     elif mode == "load_tuned":
         assert os.path.exists(
             os.path.join(
-                "models", "tuned", f"{cfg['RUN_ID']}", "tuned_" + combined_name
+                "models", "tuned", f"{cfg['RUN_ID']}", "tuned_" + concat_name
             )
         )
         model = torch.load(
             os.path.join(
-                "models", "tuned", f"{cfg['RUN_ID']}", "tuned_" + combined_name
+                "models", "tuned", f"{cfg['RUN_ID']}", "tuned_" + concat_name
             )
         )
-        logger.info(f"(combined) model loaded tuned: {model}")
+        logger.info(f"(concatenated) model loaded tuned: {model}")
     else:
         raise ValueError(
             f"Mode: {mode} not recognized (load_trained, train, load_tuned, tune)"
         )
 
-    logger.info(f"Getting Combined latent space")
-    combined_latent_space, recon_x = get_latent_space(
-        cfg, model, combined_loader, recon_calc=cfg["RECON_SAVE"]
+    logger.info(f"Getting concatenated latent space")
+    concat_latent_space, recon_x = get_latent_space(
+        cfg, model, concat_loader, recon_calc=cfg["RECON_SAVE"]
     )
 
     if cfg["PLOT_WEIGHTS"]:
@@ -437,4 +437,4 @@ def build_stackix(cfg, data_path_keys, mode="load_trained", split="train"):
 
         plot_model_weights(filepath=filepath, model=model)
 
-    return combined_latent_space
+    return concat_latent_space
