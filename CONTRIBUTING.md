@@ -3,9 +3,9 @@
 
 ## Feature Request
 
-Do you have an idea for an awesome new feature for cleanab? Let us know by submitting a feature request.
+Have a great idea for a new feature in Autoencodix? Let us know by submitting a feature request!
 
-If you are inclined to do so, you're welcome to fork cleanlab, work on implementing the feature yourself, and submit a patch. In this case, it's highly recommended that you first open an issue describing your enhancement to get early feedback on the new feature that you are implementing. This will help avoid wasted efforts and ensure that your work is incorporated into the cleanlab code base.
+If you'd like to take the initiative, feel free to fork Autoencodix, work on implementing the feature, and submit a patch. Before starting, we highly recommend opening an issue to describe your enhancement. This helps you get early feedback and ensures that your work can be effectively incorporated into the Autoencodix codebase, saving time and aligning with the project’s direction.
 
 ## Bug Report
 Even the smartest Gaul can make mistakes, so if you encounter a bug when using Autoencodix, we highly appreciate a bug report. 
