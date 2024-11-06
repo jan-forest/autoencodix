@@ -330,3 +330,6 @@ error: Microsoft Visual C++ 14.0 or greater is required"
 ```
 You can find solutions in this [thread](https://stackoverflow.com/questions/64261546/how-to-solve-error-microsoft-visual-c-14-0-or-greater-is-required-when-inst)
 
+## 10 Contributing
+Contributions are highly welcome, please check your [guide](https://github.com/jan-forest/autoencodix/blob/main/CONTRIBUTING.md)
+
