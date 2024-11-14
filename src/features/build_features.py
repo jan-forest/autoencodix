@@ -91,30 +91,36 @@ class DataSetPreparer:
             ) = image_scaler.get_nearest_quadratic_image_size()
             self.X_tensor = self.image_data_to_tensor()
 
-        elif self.data_modality in ["NUMERIC", "MIXED", "COMBINED"]:
+        elif self.data_modality in ["NUMERIC", "MIXED", "COMBINED", "CONCAT"]:
             self.X_tensor = self.numeric_data_to_tensor()
         else:
             raise ValueError(
-                f"Data modality {self.data_modality} not supported, use one of ['IMG', 'NUMERIC', 'MIXED', 'COMBINED']"
+                f"Data modality {self.data_modality} not supported, use one of ['IMG', 'NUMERIC', 'MIXED', 'COMBINED', 'CONCAT']"
             )
 
     def get_data(self):
         return self.sample_ids, self.X_tensor, self.X_split
 
     def read_data_file(self):
-
+        
         file_path = os.path.join(
             "data/processed",
             self.cfg["RUN_ID"],
             self.path_key + "_data.parquet",
         )
+
+        # Interim data set file with combined input
         if self.path_key.split("-")[0] == "COMBINED":
-            # using min max Scalinf for HVAE input.
+            file_path = os.path.join(self.cfg["DATA_TYPE"][self.path_key]["FILE_PROC"])
+
+        if self.path_key.split("-")[0] == "CONCAT":            
             # we need this, because the HVAE Input are the concated latent spaces of the VAEs for each datatype
 
             file_path = os.path.join(self.cfg["DATA_TYPE"][self.path_key]["FILE_PROC"])
             X = pd.read_parquet(file_path)
-            X = normalize_data(X, cfg=self.cfg)
+            if not self.cfg["RECONSTR_LOSS"] == "MSE":   # # using min max Scalinf for HVAE input, when BCE or other loss.
+                X = normalize_data(X, cfg=self.cfg, method="MinMax")
+
             return X
 
         return pd.read_parquet(file_path)
