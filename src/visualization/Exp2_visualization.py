@@ -8,12 +8,12 @@ import seaborn as sns
 from matplotlib.ticker import LinearLocator, LogLocator
 
 from seaborn import axes_style
-
+so.Plot.config.theme.update(axes_style("whitegrid"))
 
 config_prefix_list = ["Exp2_TCGA_tune", "Exp2_SC_tune"]
 
-# rootdir = "/mnt/c/Users/ewald/Nextcloud/eigene_shares/AutoEncoderOmics/SaveResults/SC-UL-Connection/"
-rootdir = "./"
+rootdir = "/mnt/c/Users/ewald/Nextcloud/eigene_shares/AutoEncoderOmics/SaveResults/SC-UL-Connection/"
+# rootdir = "./"
 rootsave = "./reports/paper-visualizations/Exp2/"
 output_type = ".png"
 # output_type = ".svg"
@@ -70,64 +70,86 @@ for config_prefix in config_prefix_list:
             rootdir
             + "reports/"
             + config["RUN_ID"]
-            + "/COMBINED-*"
+            # + "/COMBINED-*"
+            + "/CO*"    # match CONCAT or COMBINED
             + "best_model_params.txt"
         )
-        param_path = glob.glob(param_path_regex)[0]  # Should only be one matching file
-        best_params_series = pd.read_csv(
-            param_path, header=0, names=["parameter", "values"], index_col=0
-        )["values"]
-        run_id = config["RUN_ID"]
-        df_results.loc[run_id, "weight_decay"] = best_params_series["weight_decay"]
-        df_results.loc[run_id, "dropout_all"] = best_params_series["dropout_all"]
-        df_results.loc[run_id, "encoding_factor"] = best_params_series[
-            "encoding_factor"
-        ]
-        df_results.loc[run_id, "lr"] = best_params_series["lr"]
+        if len(glob.glob(param_path_regex)) > 0:
+            param_path = glob.glob(param_path_regex)[0]  # Should only be one matching file
+            best_params_series = pd.read_csv(
+                param_path, header=0, names=["parameter", "values"], index_col=0
+            )["values"]
+            run_id = config["RUN_ID"]
+            df_results.loc[run_id, "weight_decay"] = best_params_series["weight_decay"]
+            df_results.loc[run_id, "dropout_all"] = best_params_series["dropout_all"]
+            df_results.loc[run_id, "encoding_factor"] = best_params_series[
+                "encoding_factor"
+            ]
+            df_results.loc[run_id, "lr"] = best_params_series["lr"]
 
 # print(df_results)
 
 for run_id in df_results.index:
+	# file_regex = "reports/" + run_id + "/losses_*.parquet"
+	# file_list = glob.glob(rootdir + file_regex)
+	dm = df_results.loc[run_id, "Data_Modalities"].split("+")
 
-    file_regex = "reports/" + run_id + "/losses_*.parquet"
-    file_list = glob.glob(rootdir + file_regex)
-    dm = df_results.loc[run_id, "Data_Modalities"].split("+")
-    # file_list = [ f for f in file_list if all(c in f for c in dm) ]
-    loss_file = max(file_list, key=len)  # combined loss always has the longest name
+	# loss_file = max(file_list, key=len)  # combined loss always has the longest name
+	if "stackix" in run_id:
+		df_results.loc[run_id, "Rec. loss"] = 0
+		df_results.loc[run_id, "Total loss"] = 0
+		## single dm
+		for d in dm:
+			loss_file = rootdir + "reports/" + run_id + "/losses_tuned_" + df_results.loc[run_id,"Architecture"].split("_")[0] + "_base_" + d + ".parquet"
+			loss_df = pd.read_parquet(loss_file)
+			if "train_r2" in loss_df.columns:
+				df_results.loc[run_id, "Rec. loss"] +=  loss_df["valid_recon_loss"].iloc[-1]
+				df_results.loc[run_id, "Total loss"] += loss_df["valid_total_loss"].iloc[-1]
 
-    if len(file_list) > 0:
-        loss_df = pd.read_parquet(loss_file)
-        if "train_r2" in loss_df.columns:
-            df_results.loc[run_id, "R2_train"] = loss_df["train_r2"].iloc[-1]
-            df_results.loc[run_id, "R2_valid"] = loss_df["valid_r2"].iloc[-1]
-            df_results.loc[run_id, "Rec. loss"] = loss_df["valid_recon_loss"].iloc[-1]
-            df_results.loc[run_id, "Total loss"] = loss_df["valid_total_loss"].iloc[-1]
+		## combined
+		loss_file = rootdir + "reports/" + run_id + "/losses_tuned_" + df_results.loc[run_id,"Architecture"].split("_")[0] + "_concat_" + "_".join(dm) + ".parquet"
+		loss_df = pd.read_parquet(loss_file)
+		if "train_r2" in loss_df.columns:
+			df_results.loc[run_id, "Rec. loss"] +=  loss_df["valid_recon_loss"].iloc[-1]
+			df_results.loc[run_id, "Total loss"] += loss_df["valid_total_loss"].iloc[-1]
+
+	else:
+		loss_file = rootdir + "reports/" + run_id + "/losses_tuned_" + "_".join(dm) + "_" + df_results.loc[run_id,"Architecture"].split("_")[0] + ".parquet"
+
+		loss_df = pd.read_parquet(loss_file)
+		if "train_r2" in loss_df.columns:
+			df_results.loc[run_id, "R2_train"] = loss_df["train_r2"].iloc[-1]
+			df_results.loc[run_id, "R2_valid"] = loss_df["valid_r2"].iloc[-1]
+			df_results.loc[run_id, "Rec. loss"] = loss_df["valid_recon_loss"].iloc[-1]
+			df_results.loc[run_id, "Total loss"] = loss_df["valid_total_loss"].iloc[-1]
 
 
-# print(df_results)
+print(df_results)
 
 arch_order = [
     "vanillix_B1",
     "varix_B1",
     "varix_B0.1",
     "varix_B0.01",
+    "ontix_B1",
     "ontix_B0.1",
     "ontix_B0.01",
+    "stackix_B1",
+    "stackix_B0.1",
     "stackix_B0.01",
-    "stackix_B0.001",
 ]
 dm_order = ["RNA", "METH", "MUT", "METH+RNA", "MUT+RNA", "METH+MUT", "METH+MUT+RNA"]
 
 print("make plot reconstruction")
-p_recon = (
-    so.Plot(df_results, y="Architecture", x="R2_valid", color="Latent_Dim")
-    .facet(col="Data_Modalities", wrap=7, order=dm_order)
-    .add(so.Dot(), so.Dodge(), fill="Data_set", marker="Latent_Dim")
-    .scale(color=so.Nominal(), y=so.Nominal(order=arch_order), marker=["o", "^", "*"])
-    .layout(size=(20, 5))
-    .label(legend=None)
-    .limit(x=(-0.4, 1.1))
-)
+# p_recon = (
+#     so.Plot(df_results, y="Architecture", x="R2_valid", color="Latent_Dim")
+#     .facet(col="Data_Modalities", wrap=7, order=dm_order)
+#     .add(so.Dot(), so.Dodge(), fill="Data_set", marker="Latent_Dim")
+#     .scale(color=so.Nominal(), y=so.Nominal(order=arch_order), marker=["o", "^", "*"])
+#     .layout(size=(20, 5))
+#     .label(legend=None)
+#     .limit(x=(-0.4, 1.1))
+# )
 
 p_recon2 = (
     so.Plot(df_results, y="Architecture", x="Rec. loss", color="Latent_Dim")
@@ -139,7 +161,7 @@ p_recon2 = (
     # .limit(x=(-0.4,1.1))
 )
 
-p_recon.save(rootsave + "Exp2_Supp_reconcap-R2" + output_type, bbox_inches="tight")
+# p_recon.save(rootsave + "Exp2_Supp_reconcap-R2" + output_type, bbox_inches="tight")
 p_recon2.save(rootsave + "Exp2_Fig3A_reconcap" + output_type, bbox_inches="tight")
 
 
@@ -242,10 +264,12 @@ arch_plus_order = [
     "varix_B1",
     "varix_B0.1",
     "varix_B0.01",
+    "ontix_B1",
     "ontix_B0.1",
     "ontix_B0.01",
+    "stackix_B1",
+    "stackix_B0.1",
     "stackix_B0.01",
-    "stackix_B0.001",
     "PCA",
     "UMAP",
 ]
@@ -326,6 +350,7 @@ p_ml_task = (
         color=so.Nominal(),
         y=so.Nominal(order=arch_plus_order),
     )
+    .limit(x=(ml_results_normed["Perf. over random"].quantile(q=0.01), ml_results_normed["Perf. over random"].quantile(q=0.99)))
     .layout(size=(20, 10))
     .label(legend=None)
 )
@@ -496,9 +521,11 @@ ml_results_untuned.index = ml_results_untuned["Config_ID"]
 ml_results_untuned.index.name = "Index"
 
 ## calculate difference to tuned AE
+tune_train_both = df_results_untuned.index.intersection(df_results["Config_ID"].str.replace("_tune_", "_train_"))
 # print(df_results_untuned)
 r2_untuned = df_results_untuned.loc[
-    df_results["Config_ID"].str.replace("_tune_", "_train_"), "R2_valid"
+    # df_results["Config_ID"].str.replace("_tune_", "_train_"), "R2_valid"
+    tune_train_both, "R2_valid"
 ]
 
 r2_untuned.index = r2_untuned.index.str.replace("_train_", "_tune_")
@@ -511,7 +538,8 @@ df_results["R2_valid_diff"] = df_results["R2_valid_diff"].astype(float)
 
 #
 recon_untuned = df_results_untuned.loc[
-    df_results["Config_ID"].str.replace("_tune_", "_train_"), "Rec. loss"
+    # df_results["Config_ID"].str.replace("_tune_", "_train_"), "Rec. loss"
+    tune_train_both, "Rec. loss"
 ]
 
 recon_untuned.index = recon_untuned.index.str.replace("_train_", "_tune_")
@@ -524,7 +552,8 @@ df_results["Rec. loss improvement"] = df_results["Rec. loss improvement"].astype
 
 #
 total_untuned = df_results_untuned.loc[
-    df_results["Config_ID"].str.replace("_tune_", "_train_"), "Total loss"
+    # df_results["Config_ID"].str.replace("_tune_", "_train_"), "Total loss"
+    tune_train_both, "Total loss"
 ]
 
 total_untuned.index = total_untuned.index.str.replace("_train_", "_tune_")
@@ -682,6 +711,7 @@ p_recon_diff5.save(
 # print(ml_results.dtypes)
 # print(df_results.dtypes)
 print("make plot tuning ML improvement")
+
 p_ml_diff = (
     so.Plot(
         ml_results.loc[ml_results["ML_Algorithm"] == sel_ml_alg, :],
@@ -711,7 +741,7 @@ p_ml_diff = (
     )
     .layout(size=(20, 10))
     # .label(legend=Non)
-    .limit(x=(-1.1, 1.1))
+    .limit(x=(ml_results["Perf. improvement"].quantile(q=0.01), ml_results["Perf. improvement"].quantile(q=0.99)))
 )
 
 
@@ -741,7 +771,7 @@ p_ml_diff2 = (
         marker=["o", "^", "*"],
     )
     .layout(size=(10, 5))
-    .limit(x=(-1.1, 1.1))
+    .limit(x=(ml_results["Perf. improvement"].quantile(q=0.01), ml_results["Perf. improvement"].quantile(q=0.99)))
 )
 
 
