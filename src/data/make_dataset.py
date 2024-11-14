@@ -178,7 +178,7 @@ def unified_sample_list(cfg):
                     train_size=SPLIT[0],
                     random_state=random_state,
                 )
-                sample_list_test, sample_list_validate = train_test_split(
+                sample_list_validate, sample_list_test = train_test_split(
                     sample_list_test,
                     train_size=SPLIT[1] / (SPLIT[1] + SPLIT[2]),
                     random_state=random_state,
