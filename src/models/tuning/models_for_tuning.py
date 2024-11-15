@@ -289,7 +289,7 @@ class OntixTune(nn.Module):
             enc_dim.extend(
                 get_layer_dim(
                     enc_dim[-1], self.latent_dim, dec_fc_layer, self.enc_factor
-                )
+                )[1:]   # First item already in enc_dim
             )
 
         encoder_layers = []
