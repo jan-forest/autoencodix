@@ -40,7 +40,7 @@ Please, use also this to cite our work when using our framework.
   * [8 References](#8-references)
   * [9 FAQ](#9-faq)
     + [Reproducibility and CUBLAS_WORKSPACE_CONFIG](#reproducibility-and-cublas-workspace-config)
-  * [10 Contributing(#10-contributing)
+  * [10 Contributing](#10-contributing)
   
 
 ## 1 INSTALLATION
