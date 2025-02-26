@@ -44,6 +44,9 @@ TRAIN_TYPE: "train" # SHOULDDO train or tune are possible
 MODEL_TYPE: "varix" #SHOULDO which autoencoder to use: vanillix, varix, stackix, ontix or x-modalix
 BETA: 0.1 # OPTIONAL float that adds a weight to the KL divergence or MMD loss of variational autoencoder
 
+N_LAYERS: 2 # OPTIONAL number of layers for the encoder, respectively decoder (all integer values are possible)
+ENC_FACTOR: 4 # OPTIONAL Factor (float) by which the number of input neurons is divided to get the number of output neurons. Should be larger than 1 for compressing autoencoder.
+
 LATENT_DIM_FIXED: 2 # SHOULDDO number of neurons in latent dimenion (all integer values are possible)
 BATCH_SIZE: 512 # SHOULDDO (all integer values are possible, depending on your hardware and data size)
 EPOCHS: 100 # SHOULDDO (all integer values are possible)
@@ -52,6 +55,9 @@ VAE_LOSS: "KL" # SHOULDDO  loss function for VAE to fit standard normal distribu
 RECONSTR_LOSS: "MSE" # SHOULDDO (BCE or MSE)
 
 PREDICT_SPLIT: "all" # SHOULDDO data split the trainied model uses to generate latent space (all, train, test, valid are possible) default is all
+
+# Stackix specific
+DENSE_SIZE: 32 # OPTIONAL number of neurons in the dense layer of the stackix autoencoder (all integer values are possible). Should be larger than LATENT_DIM_FIXED and smaller than K_FILTER
 
 # # Ontix specific
 # NON_ONT_LAYER: 1 # OPTIONAL Specify additional layer for ontix if should LATENT_DIM_FIXED < Ontology Dimension
