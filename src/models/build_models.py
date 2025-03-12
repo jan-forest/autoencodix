@@ -253,7 +253,10 @@ def build_stackix(cfg, data_path_keys, mode="load_trained", split="train"):
         validloader = get_loader(cfg=cfg, path_key=k, split_type="valid")
 
         # dense layer size of VAE per data modality
-        dense_size = int(dataloader.dataset.input_size() / 8)
+        if "DENSE_SIZE" in cfg:
+            dense_size = cfg["DENSE_SIZE"]
+        else:
+            dense_size = int(dataloader.dataset.input_size() / 8)
         # print("[1] Dense size: " + str(dense_size))
 
         model = get_model(

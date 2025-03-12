@@ -31,14 +31,16 @@ def get_layer_dim(feature_dim, latent_dim, n_layers, enc_factor):
 class Vanillix(nn.Module):
     """A class to define a Vanilla Autoencoder"""
 
-    def __init__(self, input_dim, latent_dim, global_p=0.1):
+    def __init__(self, input_dim, latent_dim, global_p=0.1, n_layers=2, enc_factor=4):
         super(Vanillix, self).__init__()
         # Model attributes
         self.input_dim = input_dim
         assert input_dim > 4, "input_dim must be greater than 4"
-        self.n_layers = 2
+        # self.n_layers = 2
+        self.n_layers = n_layers
         self.global_p = global_p
-        self.enc_factor = 4
+        # self.enc_factor = 4
+        self.enc_factor = enc_factor
         self.latent_dim = latent_dim
 
         # Building architecture
@@ -90,14 +92,16 @@ class Vanillix(nn.Module):
 class Varix(nn.Module):
     """A class to define a VAE model"""
 
-    def __init__(self, input_dim, latent_dim, global_p=0.1):
+    def __init__(self, input_dim, latent_dim, global_p=0.1, n_layers=2, enc_factor=4):
         super(Varix, self).__init__()
         # Model attributes
         self.input_dim = input_dim
         assert input_dim > 4, "input_dim must be greater than 4"
-        self.n_layers = 2
+        # self.n_layers = 2
+        self.n_layers = n_layers
         self.global_p = global_p
-        self.enc_factor = 4
+        # self.enc_factor = 4
+        self.enc_factor = enc_factor
         self.latent_dim = latent_dim
 
         # Building architecture
@@ -163,14 +167,16 @@ class Varix(nn.Module):
 class Stackix(nn.Module):
     """A class to define a stacked or hierarchical Autoencoder"""
 
-    def __init__(self, input_dim, latent_dim, global_p=0.1):
+    def __init__(self, input_dim, latent_dim, global_p=0.1, n_layers=2, enc_factor=4):
         super(Stackix, self).__init__()
         # Model attributes
         self.input_dim = input_dim
         assert input_dim > 4, "input_dim must be greater than 4"
-        self.n_layers = 2
+        # self.n_layers = 2
+        self.n_layers = n_layers
         self.global_p = global_p
-        self.enc_factor = 4
+        # self.enc_factor = 4
+        self.enc_factor = enc_factor
         self.latent_dim = latent_dim
 
         # Building architecture
@@ -237,7 +243,7 @@ class Ontix(nn.Module):
     """A class to define a ontology-based VAE"""
 
     def __init__(
-        self, input_dim, latent_dim, dec_fc_layer, mask_1, mask_2=None, global_p=0.1
+        self, input_dim, latent_dim, dec_fc_layer, mask_1, mask_2=None, global_p=0.1, enc_factor=4
     ):
         super(Ontix, self).__init__()
         # Model attributes
@@ -261,7 +267,8 @@ class Ontix(nn.Module):
                 self.latent_dim = self.ont_dim_2
 
         self.global_p = global_p
-        self.enc_factor = 4
+        # self.enc_factor = 4
+        self.enc_factor = enc_factor
 
         # Building architecture
         if self.ont_dim_2 == None:

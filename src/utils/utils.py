@@ -243,21 +243,34 @@ def get_model(
         global_p = cfg["DROP_P"]
     else:
         global_p = 0.1
+    
+    if "ENC_FACTOR" in cfg:
+        enc_factor = cfg["ENC_FACTOR"]
+    else:
+        enc_factor = 4
+    
+    if "N_LAYERS" in cfg:
+        n_layers = cfg["N_LAYERS"]
+    else:
+        n_layers = 2
 
     match input_type:
         case "NUMERIC":
             match model_type:
                 case "stackix":
                     return Stackix(
-                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        # input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p, n_layers=n_layers, enc_factor=enc_factor
                     )
                 case "varix":
                     return Varix(
-                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        # input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p, n_layers=n_layers, enc_factor=enc_factor
                     )
                 case "vanillix":
                     return Vanillix(
-                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        # input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p, n_layers=n_layers, enc_factor=enc_factor
                     )
                 case "ontix":
                     model = Ontix(
@@ -267,6 +280,7 @@ def get_model(
                         mask_1=mask_1,
                         mask_2=mask_2,
                         global_p=global_p,
+                        enc_factor=enc_factor,
                     )
                     return model
 
@@ -282,15 +296,18 @@ def get_model(
             match model_type:
                 case "stackix":
                     return Stackix(
-                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        # input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p, n_layers=n_layers, enc_factor=enc_factor
                     )
                 case "varix":
                     return Varix(
-                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        # input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p, n_layers=n_layers, enc_factor=enc_factor
                     )
                 case "vanillix":
                     return Vanillix(
-                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        # input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p, n_layers=n_layers, enc_factor=enc_factor
                     )
                 case "ontix":
                     model = Ontix(
@@ -300,6 +317,7 @@ def get_model(
                         mask_1=mask_1,
                         mask_2=mask_2,
                         global_p=global_p,
+                        enc_factor=enc_factor,
                     )
                     return model
 
@@ -347,15 +365,18 @@ def get_model(
             match model_type:
                 case "stackix":
                     return Stackix(
-                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        # input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p, n_layers=n_layers, enc_factor=enc_factor
                     )
                 case "varix":
                     return Varix(
-                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        # input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p, n_layers=n_layers, enc_factor=enc_factor
                     )
                 case "vanillix":
                     return Vanillix(
-                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        # input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p, n_layers=n_layers, enc_factor=enc_factor
                     )
                 case "ontix":
                     model = Ontix(
@@ -365,6 +386,7 @@ def get_model(
                         mask_1=mask_1,
                         mask_2=mask_2,
                         global_p=global_p,
+                        enc_factor=enc_factor,
                     )
                     return model
                 case _:
@@ -375,7 +397,8 @@ def get_model(
             match model_type:
                 case "stackix":
                     return Stackix(
-                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        # input_dim=input_dim, latent_dim=latent_dim, global_p=global_p
+                        input_dim=input_dim, latent_dim=latent_dim, global_p=global_p, n_layers=n_layers, enc_factor=enc_factor
                     )
                 case _:
                     raise NotImplementedError(
