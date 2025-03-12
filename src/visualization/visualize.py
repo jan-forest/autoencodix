@@ -225,7 +225,7 @@ def plot_latent_2D(
             hue=labels,
             palette="bwr",
             s=40,
-            alpha=0.5,
+            alpha=0.8,
             ec="black",
         )
     else:
@@ -235,7 +235,7 @@ def plot_latent_2D(
             hue=labels,
             hue_order=np.unique(labels),
             s=40,
-            alpha=0.5,
+            alpha=0.8,
             ec="black",
         )
     if center:

@@ -15,6 +15,7 @@ import pathlib
 import click
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 import seaborn as sns
 from sklearn import linear_model, svm
 from sklearn.decomposition import PCA
@@ -115,14 +116,28 @@ def single_ml_presplit(
 
     logger = getlogger(cfg)
 
-    for split in split_list:
-        X = df.loc[sample_split.loc[sample_split.SPLIT == split, "SAMPLE_ID"], :]
-        samples = [s for s in X.index]
-        Y = clin_data.loc[samples, task_param]
+    X_train = df.loc[sample_split.loc[sample_split.SPLIT == "train", "SAMPLE_ID"], :]
+    train_samples = [s for s in X_train.index]
+    Y_train = clin_data.loc[train_samples, task_param]
 
-        # Train on train data
-        if len(Y.unique()) > 1:
-            sklearn_ml.fit(X, Y)
+    # train model once on training data
+    if len(Y_train.unique()) > 1:
+        sklearn_ml.fit(X_train, Y_train)
+
+            # eval on all splits
+        for split in split_list:
+            X = df.loc[sample_split.loc[sample_split.SPLIT == split, "SAMPLE_ID"], :]
+            samples = [s for s in X.index]
+            Y = clin_data.loc[samples, task_param]
+
+    # for split in split_list:
+    #     X = df.loc[sample_split.loc[sample_split.SPLIT == split, "SAMPLE_ID"], :]
+    #     samples = [s for s in X.index]
+    #     Y = clin_data.loc[samples, task_param]
+
+    #     # Train on train data
+    #     if len(Y.unique()) > 1:
+    #         sklearn_ml.fit(X, Y)
 
             # Performace on train, valid and test data split
 
@@ -132,13 +147,21 @@ def single_ml_presplit(
                 score_df["metric"].append(m)
                 match m:
                     case "roc_auc_ovo":
+                        # Check that Y has only classes which are present in Y_train
+                        if len(set(Y.unique()).difference(set(Y_train.unique()))) > 0:
+                            logger.warning(f"Classes in split {split} are not present in training data")
+                            # Adjust Y to only contain classes present in Y_train
+                            Y = Y[Y.isin(Y_train.unique())]
                         # print(f'number of unique values in Y: {len(pd.unique(Y))}')
                         y_proba = sklearn_ml.predict_proba(X)
                         if len(pd.unique(Y)) == 2:
                             y_proba = y_proba[:, 1]
-
+                        
+                        # print(f"Y_train: {np.sort(Y_train.unique())}")
+                        # print(f"Y: {Y.unique()}")
+                        # print(f"y_proba: {y_proba.shape}")
                         roc_temp = roc_auc_score(
-                            Y, y_proba, multi_class="ovo", average="macro"
+                            Y, y_proba, multi_class="ovo", average="macro", labels=np.sort(Y_train.unique())
                         )
                         score_df["value"].append(roc_temp)
 
