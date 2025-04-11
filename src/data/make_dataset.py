@@ -97,7 +97,7 @@ def unified_sample_list(cfg):
                         logger.warning(
                             f"You provided a not supported input file type:{cfg['DATA_TYPE'][data_type]['FILE_RAW'].split('.')[1]}"
                         )
-
+            logger.debug(f"sample list length: {len(s_id)}")
             if len(sample_list) > 0:
                 sample_list = sample_list.intersection(s_id.index)
             else:

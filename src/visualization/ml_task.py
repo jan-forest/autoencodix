@@ -149,9 +149,11 @@ def single_ml_presplit(
                     case "roc_auc_ovo":
                         # Check that Y has only classes which are present in Y_train
                         if len(set(Y.unique()).difference(set(Y_train.unique()))) > 0:
-                            logger.warning(f"Classes in split {split} are not present in training data")
+                            logger.debug(f"Classes in split {split} are not present in training data")
                             # Adjust Y to only contain classes present in Y_train
                             Y = Y[Y.isin(Y_train.unique())]
+                            # Adjust X as well
+                            X = X.loc[Y.index, :]
                         # print(f'number of unique values in Y: {len(pd.unique(Y))}')
                         y_proba = sklearn_ml.predict_proba(X)
                         if len(pd.unique(Y)) == 2:

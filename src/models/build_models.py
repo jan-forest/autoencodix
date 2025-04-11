@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 import torch
-
+from torchinfo import summary
 from src.models.tuning.tuning import find_best_model
 from src.utils.utils import (
     get_latent_space,
@@ -200,8 +200,14 @@ def build_vanilla(
 
     else:
         raise ValueError("Mode not recognized (load, load_trained, train, load_tuned)")
-    logger.info(f"Model structure:")
-    logger.info(f"{model}")
+    if cfg["LOGLEVEL"] == "DEBUG":
+        logger.debug("Model summary:")
+        summary(model, input_size=(cfg['BATCH_SIZE'], data.shape[1]))
+    else:
+        logger.info("Model structure:")
+        logger.info(f"{model}")
+
+
     latent_space, recon_x = get_latent_space(
         cfg, model, combined_loader, recon_calc=cfg["RECON_SAVE"]
     )

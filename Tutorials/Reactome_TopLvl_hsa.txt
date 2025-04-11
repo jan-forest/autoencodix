@@ -1,0 +1,29 @@
+R-HSA-9612973 	Autophagy
+R-HSA-1640170 	Cell Cycle
+R-HSA-1500931 	Cell-Cell communication
+R-HSA-8953897 	Cellular responses to stimuli
+R-HSA-4839726 	Chromatin organization
+R-HSA-400253 	Circadian Clock
+R-HSA-73894 	DNA Repair
+R-HSA-69306 	DNA Replication
+R-HSA-1266738 	Developmental Biology
+R-HSA-8963743 	Digestion and absorption
+R-HSA-1643685 	Disease
+R-HSA-9748784 	Drug ADME
+R-HSA-1474244 	Extracellular matrix organization
+R-HSA-74160 	Gene expression (Transcription)
+R-HSA-109582 	Hemostasis
+R-HSA-168256 	Immune System
+R-HSA-1430728 	Metabolism
+R-HSA-8953854 	Metabolism of RNA
+R-HSA-392499 	Metabolism of proteins
+R-HSA-397014 	Muscle contraction
+R-HSA-112316 	Neuronal System
+R-HSA-1852241 	Organelle biogenesis and maintenance
+R-HSA-5357801 	Programmed Cell Death
+R-HSA-9609507 	Protein localization
+R-HSA-1474165 	Reproduction
+R-HSA-9709957 	Sensory Perception
+R-HSA-162582 	Signal Transduction
+R-HSA-382551 	Transport of small molecules
+R-HSA-5653656 	Vesicle-mediated transport 

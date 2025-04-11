@@ -1,0 +1,650 @@
+R-HSA-140837	Hemostasis
+R-HSA-418346	Hemostasis
+R-HSA-392851	Hemostasis
+R-HSA-76005	Hemostasis
+R-HSA-210993	Hemostasis
+R-HSA-983189	Hemostasis
+R-HSA-76002	Hemostasis
+R-HSA-983231	Hemostasis
+R-HSA-114604	Hemostasis
+R-HSA-210990	Hemostasis
+R-HSA-392154	Hemostasis
+R-HSA-114508	Hemostasis
+R-HSA-75205	Hemostasis
+R-HSA-140875	Hemostasis
+R-HSA-202733	Hemostasis
+R-HSA-75892	Hemostasis
+R-HSA-392518	Hemostasis
+R-HSA-430116	Hemostasis
+R-HSA-418360	Hemostasis
+R-HSA-432142	Hemostasis
+R-HSA-456926	Hemostasis
+R-HSA-76009	Hemostasis
+R-HSA-210991	Hemostasis
+R-HSA-140834	Hemostasis
+R-HSA-140877	Hemostasis
+R-HSA-112311	Neuronal System
+R-HSA-388844	Neuronal System
+R-HSA-8849932	Neuronal System
+R-HSA-112315	Neuronal System
+R-HSA-1296061	Neuronal System
+R-HSA-1296346	Neuronal System
+R-HSA-6794361	Neuronal System
+R-HSA-6794362	Neuronal System
+R-HSA-112308	Neuronal System
+R-HSA-112310	Neuronal System
+R-HSA-1296072	Neuronal System
+R-HSA-1296052	Neuronal System
+R-HSA-1296065	Neuronal System
+R-HSA-112313	Neuronal System
+R-HSA-112314	Neuronal System
+R-HSA-1296071	Neuronal System
+R-HSA-112303	Neuronal System
+R-HSA-112307	Neuronal System
+R-HSA-452723	Developmental Biology
+R-HSA-9690406	Developmental Biology
+R-HSA-9823730	Developmental Biology
+R-HSA-1181150	Developmental Biology
+R-HSA-9830674	Developmental Biology
+R-HSA-210745	Developmental Biology
+R-HSA-9758920	Developmental Biology
+R-HSA-9796292	Developmental Biology
+R-HSA-9675108	Developmental Biology
+R-HSA-9834899	Developmental Biology
+R-HSA-9816359	Developmental Biology
+R-HSA-422475	Developmental Biology
+R-HSA-9821002	Developmental Biology
+R-HSA-9619665	Developmental Biology
+R-HSA-9821993	Developmental Biology
+R-HSA-9823739	Developmental Biology
+R-HSA-9793380	Developmental Biology
+R-HSA-2892245	Developmental Biology
+R-HSA-6805567	Developmental Biology
+R-HSA-525793	Developmental Biology
+R-HSA-9758941	Developmental Biology
+R-HSA-210746	Developmental Biology
+R-HSA-9761174	Developmental Biology
+R-HSA-6809371	Developmental Biology
+R-HSA-9819196	Developmental Biology
+R-HSA-9830369	Developmental Biology
+R-HSA-210747	Developmental Biology
+R-HSA-9820841	Developmental Biology
+R-HSA-5617472	Developmental Biology
+R-HSA-9758919	Developmental Biology
+R-HSA-5619507	Developmental Biology
+R-HSA-381340	Developmental Biology
+R-HSA-9831926	Developmental Biology
+R-HSA-9754189	Developmental Biology
+R-HSA-9820865	Developmental Biology
+R-HSA-210744	Developmental Biology
+R-HSA-9830364	Developmental Biology
+R-HSA-9733709	Developmental Biology
+R-HSA-9616222	Developmental Biology
+R-HSA-9832991	Developmental Biology
+R-HSA-5682910	Developmental Biology
+R-HSA-2892247	Developmental Biology
+R-HSA-186712	Developmental Biology
+R-HSA-1433617	Developmental Biology
+R-HSA-351202	Metabolism
+R-HSA-71291	Metabolism
+R-HSA-5423646	Metabolism
+R-HSA-1855191	Metabolism
+R-HSA-74182	Metabolism
+R-HSA-163685	Metabolism
+R-HSA-1855192	Metabolism
+R-HSA-428157	Metabolism
+R-HSA-156580	Metabolism
+R-HSA-422356	Metabolism
+R-HSA-1475029	Metabolism
+R-HSA-70895	Metabolism
+R-HSA-1855170	Metabolism
+R-HSA-8964572	Metabolism
+R-HSA-389661	Metabolism
+R-HSA-163680	Metabolism
+R-HSA-5653890	Metabolism
+R-HSA-70921	Metabolism
+R-HSA-70688	Metabolism
+R-HSA-189451	Metabolism
+R-HSA-2408522	Metabolism
+R-HSA-556833	Metabolism
+R-HSA-1855231	Metabolism
+R-HSA-1855183	Metabolism
+R-HSA-1855167	Metabolism
+R-HSA-71406	Metabolism
+R-HSA-71064	Metabolism
+R-HSA-5652084	Metabolism
+R-HSA-9033658	Metabolism
+R-HSA-6798163	Metabolism
+R-HSA-1855229	Metabolism
+R-HSA-8964540	Metabolism
+R-HSA-8956319	Metabolism
+R-HSA-209776	Metabolism
+R-HSA-163200	Metabolism
+R-HSA-8964539	Metabolism
+R-HSA-400206	Metabolism
+R-HSA-1362409	Metabolism
+R-HSA-211859	Metabolism
+R-HSA-203641	Metabolism
+R-HSA-15869	Metabolism
+R-HSA-70326	Metabolism
+R-HSA-196854	Metabolism
+R-HSA-1855184	Metabolism
+R-HSA-9018678	Metabolism
+R-HSA-8956321	Metabolism
+R-HSA-1855196	Metabolism
+R-HSA-71262	Metabolism
+R-HSA-71387	Metabolism
+R-HSA-203615	Metabolism
+R-HSA-189445	Metabolism
+R-HSA-5661270	Metabolism
+R-HSA-8848584	Metabolism
+R-HSA-8982491	Metabolism
+R-HSA-1855204	Metabolism
+R-HSA-6806667	Metabolism
+R-HSA-163754	Metabolism
+R-HSA-977347	Metabolism
+R-HSA-1630316	Metabolism
+R-HSA-71336	Metabolism
+R-HSA-5662702	Metabolism
+R-HSA-8963693	Metabolism
+R-HSA-1483249	Metabolism
+R-HSA-8853383	Metabolism
+R-HSA-8957322	Metabolism
+R-HSA-8978934	Metabolism
+R-HSA-8963691	Metabolism
+R-HSA-1855215	Metabolism
+R-HSA-1428517	Metabolism
+R-HSA-8849175	Metabolism
+R-HSA-70635	Metabolism
+R-HSA-1855156	Metabolism
+R-HSA-499943	Metabolism
+R-HSA-2564830	Metabolism
+R-HSA-71240	Metabolism
+R-HSA-1483257	Metabolism
+R-HSA-70370	Metabolism
+R-HSA-163358	Metabolism
+R-HSA-203754	Metabolism
+R-HSA-71288	Metabolism
+R-HSA-2395516	Metabolism
+R-HSA-8979227	Metabolism
+R-HSA-163359	Metabolism
+R-HSA-1614635	Metabolism
+R-HSA-163767	Metabolism
+R-HSA-196849	Metabolism
+R-HSA-202131	Metabolism
+R-HSA-211945	Metabolism
+R-HSA-71737	Metabolism
+R-HSA-8978868	Metabolism
+R-HSA-189483	Metabolism
+R-HSA-163765	Metabolism
+R-HSA-8956320	Metabolism
+R-HSA-9827857	Reproduction
+R-HSA-1187000	Reproduction
+R-HSA-1300642	Reproduction
+R-HSA-1300645	Reproduction
+R-HSA-2534343	Reproduction
+R-HSA-1500620	Reproduction
+R-HSA-1221632	Reproduction
+R-HSA-912446	Reproduction
+R-HSA-2129379	Extracellular matrix organization
+R-HSA-216083	Extracellular matrix organization
+R-HSA-3000178	Extracellular matrix organization
+R-HSA-1592389	Extracellular matrix organization
+R-HSA-3000157	Extracellular matrix organization
+R-HSA-8941237	Extracellular matrix organization
+R-HSA-2022090	Extracellular matrix organization
+R-HSA-3000170	Extracellular matrix organization
+R-HSA-3000171	Extracellular matrix organization
+R-HSA-1650814	Extracellular matrix organization
+R-HSA-1442490	Extracellular matrix organization
+R-HSA-1566977	Extracellular matrix organization
+R-HSA-1474228	Extracellular matrix organization
+R-HSA-1566948	Extracellular matrix organization
+R-HSA-1474290	Extracellular matrix organization
+R-HSA-446107	Cell-Cell communication
+R-HSA-446728	Cell-Cell communication
+R-HSA-446353	Cell-Cell communication
+R-HSA-373753	Cell-Cell communication
+R-HSA-421270	Cell-Cell communication
+R-HSA-391160	Cell-Cell communication
+R-HSA-354192	Signal Transduction
+R-HSA-9027284	Signal Transduction
+R-HSA-194138	Signal Transduction
+R-HSA-9027276	Signal Transduction
+R-HSA-1433557	Signal Transduction
+R-HSA-2028269	Signal Transduction
+R-HSA-9716542	Signal Transduction
+R-HSA-9027283	Signal Transduction
+R-HSA-9706019	Signal Transduction
+R-HSA-372708	Signal Transduction
+R-HSA-165159	Signal Transduction
+R-HSA-75157	Signal Transduction
+R-HSA-5358351	Signal Transduction
+R-HSA-1489509	Signal Transduction
+R-HSA-170834	Signal Transduction
+R-HSA-201451	Signal Transduction
+R-HSA-9024446	Signal Transduction
+R-HSA-2586552	Signal Transduction
+R-HSA-6806834	Signal Transduction
+R-HSA-5684996	Signal Transduction
+R-HSA-194315	Signal Transduction
+R-HSA-9012852	Signal Transduction
+R-HSA-354194	Signal Transduction
+R-HSA-9006931	Signal Transduction
+R-HSA-1980145	Signal Transduction
+R-HSA-9027277	Signal Transduction
+R-HSA-166520	Signal Transduction
+R-HSA-380972	Signal Transduction
+R-HSA-5687128	Signal Transduction
+R-HSA-9013694	Signal Transduction
+R-HSA-8852405	Signal Transduction
+R-HSA-74752	Signal Transduction
+R-HSA-190236	Signal Transduction
+R-HSA-372790	Signal Transduction
+R-HSA-201556	Signal Transduction
+R-HSA-1236394	Signal Transduction
+R-HSA-1502540	Signal Transduction
+R-HSA-1912422	Signal Transduction
+R-HSA-166208	Signal Transduction
+R-HSA-1227986	Signal Transduction
+R-HSA-5610787	Signal Transduction
+R-HSA-9006335	Signal Transduction
+R-HSA-3238698	Signal Transduction
+R-HSA-2404192	Signal Transduction
+R-HSA-73887	Signal Transduction
+R-HSA-157118	Signal Transduction
+R-HSA-177929	Signal Transduction
+R-HSA-9006936	Signal Transduction
+R-HSA-5683057	Signal Transduction
+R-HSA-1980143	Signal Transduction
+R-HSA-195721	Signal Transduction
+R-HSA-193704	Signal Transduction
+R-HSA-75158	Signal Transduction
+R-HSA-186797	Signal Transduction
+R-HSA-201681	Signal Transduction
+R-HSA-9006927	Signal Transduction
+R-HSA-5362517	Signal Transduction
+R-HSA-9715370	Signal Transduction
+R-HSA-3858494	Signal Transduction
+R-HSA-1257604	Signal Transduction
+R-HSA-165181	Signal Transduction
+R-HSA-388396	Signal Transduction
+R-HSA-75893	Signal Transduction
+R-HSA-5358346	Signal Transduction
+R-HSA-8848021	Signal Transduction
+R-HSA-9006934	Signal Transduction
+R-HSA-9006925	Signal Transduction
+R-HSA-500792	Signal Transduction
+R-HSA-5632684	Signal Transduction
+R-HSA-8939211	Signal Transduction
+R-HSA-195253	Signal Transduction
+R-HSA-453274	Cell Cycle
+R-HSA-69615	Cell Cycle
+R-HSA-73886	Cell Cycle
+R-HSA-68886	Cell Cycle
+R-HSA-69278	Cell Cycle
+R-HSA-453279	Cell Cycle
+R-HSA-157579	Cell Cycle
+R-HSA-1500620	Cell Cycle
+R-HSA-1221632	Cell Cycle
+R-HSA-453276	Cell Cycle
+R-HSA-912446	Cell Cycle
+R-HSA-69481	Cell Cycle
+R-HSA-69242	Cell Cycle
+R-HSA-69620	Cell Cycle
+R-HSA-774815	Cell Cycle
+R-HSA-69618	Cell Cycle
+R-HSA-9734009	Disease
+R-HSA-9671793	Disease
+R-HSA-9669938	Disease
+R-HSA-5663202	Disease
+R-HSA-2219528	Disease
+R-HSA-9687139	Disease
+R-HSA-5687613	Disease
+R-HSA-3304351	Disease
+R-HSA-5260271	Disease
+R-HSA-5663084	Disease
+R-HSA-9675126	Disease
+R-HSA-9675136	Disease
+R-HSA-5619115	Disease
+R-HSA-9675132	Disease
+R-HSA-1227990	Disease
+R-HSA-9630747	Disease
+R-HSA-5602358	Disease
+R-HSA-9671555	Disease
+R-HSA-2474795	Disease
+R-HSA-2644603	Disease
+R-HSA-9700206	Disease
+R-HSA-9675143	Disease
+R-HSA-3781865	Disease
+R-HSA-9673013	Disease
+R-HSA-9675151	Disease
+R-HSA-9735804	Disease
+R-HSA-5663205	Disease
+R-HSA-9605308	Disease
+R-HSA-9823587	Disease
+R-HSA-9693928	Disease
+R-HSA-2160456	Disease
+R-HSA-9824439	Disease
+R-HSA-9710421	Disease
+R-HSA-5668914	Disease
+R-HSA-9682385	Disease
+R-HSA-5619102	Disease
+R-HSA-9759774	Disease
+R-HSA-9697154	Disease
+R-HSA-5579029	Disease
+R-HSA-1643713	Disease
+R-HSA-2978092	Disease
+R-HSA-9675135	Disease
+R-HSA-3296482	Disease
+R-HSA-5619084	Disease
+R-HSA-9651496	Disease
+R-HSA-1226099	Disease
+R-HSA-4791275	Disease
+R-HSA-5579031	Disease
+R-HSA-9645723	Disease
+R-HSA-5423599	Disease
+R-HSA-5387390	Disease
+R-HSA-9824443	Disease
+R-HSA-9824446	Disease
+R-HSA-6802957	Disease
+R-HSA-2454202	Immune System
+R-HSA-168643	Immune System
+R-HSA-9607240	Immune System
+R-HSA-168249	Immune System
+R-HSA-2172127	Immune System
+R-HSA-879415	Immune System
+R-HSA-982772	Immune System
+R-HSA-1170546	Immune System
+R-HSA-1280218	Immune System
+R-HSA-168928	Immune System
+R-HSA-2132295	Immune System
+R-HSA-983169	Immune System
+R-HSA-1222556	Immune System
+R-HSA-2029480	Immune System
+R-HSA-198933	Immune System
+R-HSA-388841	Immune System
+R-HSA-983705	Immune System
+R-HSA-5668541	Immune System
+R-HSA-8851680	Immune System
+R-HSA-449147	Immune System
+R-HSA-9680350	Immune System
+R-HSA-168898	Immune System
+R-HSA-1834949	Immune System
+R-HSA-9645460	Immune System
+R-HSA-1280215	Immune System
+R-HSA-6798695	Immune System
+R-HSA-392517	Immune System
+R-HSA-913531	Immune System
+R-HSA-166658	Immune System
+R-HSA-6803157	Immune System
+R-HSA-5621481	Immune System
+R-HSA-9674555	Immune System
+R-HSA-202403	Immune System
+R-HSA-1592230	Organelle biogenesis and maintenance
+R-HSA-2151201	Organelle biogenesis and maintenance
+R-HSA-8949613	Organelle biogenesis and maintenance
+R-HSA-5620912	Organelle biogenesis and maintenance
+R-HSA-5620920	Organelle biogenesis and maintenance
+R-HSA-5617833	Organelle biogenesis and maintenance
+R-HSA-5620924	Organelle biogenesis and maintenance
+R-HSA-2151209	Organelle biogenesis and maintenance
+R-HSA-8949215	Transport of small molecules
+R-HSA-1369062	Transport of small molecules
+R-HSA-425366	Transport of small molecules
+R-HSA-382556	Transport of small molecules
+R-HSA-983712	Transport of small molecules
+R-HSA-432030	Transport of small molecules
+R-HSA-8963899	Transport of small molecules
+R-HSA-8949664	Transport of small molecules
+R-HSA-432047	Transport of small molecules
+R-HSA-425393	Transport of small molecules
+R-HSA-936837	Transport of small molecules
+R-HSA-425397	Transport of small molecules
+R-HSA-174824	Transport of small molecules
+R-HSA-917937	Transport of small molecules
+R-HSA-1247673	Transport of small molecules
+R-HSA-432040	Transport of small molecules
+R-HSA-425407	Transport of small molecules
+R-HSA-2672351	Transport of small molecules
+R-HSA-9845576	Transport of small molecules
+R-HSA-5223345	Transport of small molecules
+R-HSA-445717	Transport of small molecules
+R-HSA-1369007	Transport of small molecules
+R-HSA-189200	Transport of small molecules
+R-HSA-8963898	Transport of small molecules
+R-HSA-1480926	Transport of small molecules
+R-HSA-917977	Transport of small molecules
+R-HSA-8964043	Transport of small molecules
+R-HSA-1237044	Transport of small molecules
+R-HSA-8981607	Transport of small molecules
+R-HSA-400508	Metabolism of proteins
+R-HSA-72613	Metabolism of proteins
+R-HSA-8955332	Metabolism of proteins
+R-HSA-5676934	Metabolism of proteins
+R-HSA-391251	Metabolism of proteins
+R-HSA-5368287	Metabolism of proteins
+R-HSA-422085	Metabolism of proteins
+R-HSA-264876	Metabolism of proteins
+R-HSA-163125	Metabolism of proteins
+R-HSA-72766	Metabolism of proteins
+R-HSA-597592	Metabolism of proteins
+R-HSA-5688426	Metabolism of proteins
+R-HSA-2990846	Metabolism of proteins
+R-HSA-1799339	Metabolism of proteins
+R-HSA-2022377	Metabolism of proteins
+R-HSA-8873719	Metabolism of proteins
+R-HSA-156842	Metabolism of proteins
+R-HSA-9837999	Metabolism of proteins
+R-HSA-8876725	Metabolism of proteins
+R-HSA-8951664	Metabolism of proteins
+R-HSA-5683826	Metabolism of proteins
+R-HSA-2980736	Metabolism of proteins
+R-HSA-5173105	Metabolism of proteins
+R-HSA-381426	Metabolism of proteins
+R-HSA-390466	Metabolism of proteins
+R-HSA-209952	Metabolism of proteins
+R-HSA-72764	Metabolism of proteins
+R-HSA-446203	Metabolism of proteins
+R-HSA-8957275	Metabolism of proteins
+R-HSA-163841	Metabolism of proteins
+R-HSA-379724	Metabolism of proteins
+R-HSA-389977	Metabolism of proteins
+R-HSA-8852135	Metabolism of proteins
+R-HSA-977225	Metabolism of proteins
+R-HSA-5578768	Muscle contraction
+R-HSA-5576886	Muscle contraction
+R-HSA-5576893	Muscle contraction
+R-HSA-5576890	Muscle contraction
+R-HSA-445355	Muscle contraction
+R-HSA-5576891	Muscle contraction
+R-HSA-5578775	Muscle contraction
+R-HSA-5576892	Muscle contraction
+R-HSA-5576894	Muscle contraction
+R-HSA-390522	Muscle contraction
+R-HSA-1368071	Circadian Clock
+R-HSA-1368082	Circadian Clock
+R-HSA-1368108	Circadian Clock
+R-HSA-3214815	Chromatin organization
+R-HSA-3247509	Chromatin organization
+R-HSA-3214841	Chromatin organization
+R-HSA-3214858	Chromatin organization
+R-HSA-3214842	Chromatin organization
+R-HSA-3214847	Chromatin organization
+R-HSA-5213460	Programmed Cell Death
+R-HSA-109581	Programmed Cell Death
+R-HSA-5218859	Programmed Cell Death
+R-HSA-5357769	Programmed Cell Death
+R-HSA-5620971	Programmed Cell Death
+R-HSA-169911	Programmed Cell Death
+R-HSA-109606	Programmed Cell Death
+R-HSA-75153	Programmed Cell Death
+R-HSA-1445148	Vesicle-mediated transport
+R-HSA-8856828	Vesicle-mediated transport
+R-HSA-6811442	Vesicle-mediated transport
+R-HSA-3000480	Vesicle-mediated transport
+R-HSA-3000484	Vesicle-mediated transport
+R-HSA-199992	Vesicle-mediated transport
+R-HSA-3000471	Vesicle-mediated transport
+R-HSA-917729	Vesicle-mediated transport
+R-HSA-2168880	Vesicle-mediated transport
+R-HSA-157858	Vesicle-mediated transport
+R-HSA-199977	Vesicle-mediated transport
+R-HSA-3000497	Vesicle-mediated transport
+R-HSA-2173782	Vesicle-mediated transport
+R-HSA-9007101	Vesicle-mediated transport
+R-HSA-199991	Vesicle-mediated transport
+R-HSA-69239	DNA Replication
+R-HSA-68962	DNA Replication
+R-HSA-68867	DNA Replication
+R-HSA-68952	DNA Replication
+R-HSA-69002	DNA Replication
+R-HSA-69052	DNA Replication
+R-HSA-69190	DNA Replication
+R-HSA-110313	DNA Repair
+R-HSA-5696398	DNA Repair
+R-HSA-5693606	DNA Repair
+R-HSA-73893	DNA Repair
+R-HSA-73884	DNA Repair
+R-HSA-5696399	DNA Repair
+R-HSA-5693532	DNA Repair
+R-HSA-5358508	DNA Repair
+R-HSA-73929	DNA Repair
+R-HSA-73933	DNA Repair
+R-HSA-6783310	DNA Repair
+R-HSA-5693571	DNA Repair
+R-HSA-73942	DNA Repair
+R-HSA-5358565	DNA Repair
+R-HSA-5358606	DNA Repair
+R-HSA-73943	DNA Repair
+R-HSA-9729902	DNA Repair
+R-HSA-110314	DNA Repair
+R-HSA-5657655	DNA Repair
+R-HSA-6781827	DNA Repair
+R-HSA-5693538	DNA Repair
+R-HSA-9750126	DNA Repair
+R-HSA-212165	Gene expression (Transcription)
+R-HSA-77075	Gene expression (Transcription)
+R-HSA-212300	Gene expression (Transcription)
+R-HSA-5334118	Gene expression (Transcription)
+R-HSA-6807505	Gene expression (Transcription)
+R-HSA-5250913	Gene expression (Transcription)
+R-HSA-73854	Gene expression (Transcription)
+R-HSA-426486	Gene expression (Transcription)
+R-HSA-75955	Gene expression (Transcription)
+R-HSA-163282	Gene expression (Transcription)
+R-HSA-73863	Gene expression (Transcription)
+R-HSA-9772755	Gene expression (Transcription)
+R-HSA-163316	Gene expression (Transcription)
+R-HSA-426496	Gene expression (Transcription)
+R-HSA-73857	Gene expression (Transcription)
+R-HSA-212436	Gene expression (Transcription)
+R-HSA-5221030	Gene expression (Transcription)
+R-HSA-211000	Gene expression (Transcription)
+R-HSA-674695	Gene expression (Transcription)
+R-HSA-5250941	Gene expression (Transcription)
+R-HSA-5578749	Gene expression (Transcription)
+R-HSA-74158	Gene expression (Transcription)
+R-HSA-749476	Gene expression (Transcription)
+R-HSA-76046	Gene expression (Transcription)
+R-HSA-73864	Gene expression (Transcription)
+R-HSA-203927	Gene expression (Transcription)
+R-HSA-73779	Gene expression (Transcription)
+R-HSA-73856	Gene expression (Transcription)
+R-HSA-76042	Gene expression (Transcription)
+R-HSA-75944	Gene expression (Transcription)
+R-HSA-9708296	Gene expression (Transcription)
+R-HSA-5601884	Gene expression (Transcription)
+R-HSA-73980	Gene expression (Transcription)
+R-HSA-73780	Gene expression (Transcription)
+R-HSA-77595	Metabolism of RNA
+R-HSA-450604	Metabolism of RNA
+R-HSA-72202	Metabolism of RNA
+R-HSA-927802	Metabolism of RNA
+R-HSA-194441	Metabolism of RNA
+R-HSA-450385	Metabolism of RNA
+R-HSA-8868773	Metabolism of RNA
+R-HSA-450520	Metabolism of RNA
+R-HSA-72086	Metabolism of RNA
+R-HSA-191859	Metabolism of RNA
+R-HSA-75072	Metabolism of RNA
+R-HSA-450408	Metabolism of RNA
+R-HSA-72200	Metabolism of RNA
+R-HSA-6787450	Metabolism of RNA
+R-HSA-75067	Metabolism of RNA
+R-HSA-429958	Metabolism of RNA
+R-HSA-6782315	Metabolism of RNA
+R-HSA-8868766	Metabolism of RNA
+R-HSA-75064	Metabolism of RNA
+R-HSA-428359	Metabolism of RNA
+R-HSA-450513	Metabolism of RNA
+R-HSA-975957	Metabolism of RNA
+R-HSA-450531	Metabolism of RNA
+R-HSA-9836573	Metabolism of RNA
+R-HSA-430039	Metabolism of RNA
+R-HSA-72187	Metabolism of RNA
+R-HSA-429914	Metabolism of RNA
+R-HSA-111367	Metabolism of RNA
+R-HSA-77588	Metabolism of RNA
+R-HSA-429947	Metabolism of RNA
+R-HSA-72306	Metabolism of RNA
+R-HSA-72172	Metabolism of RNA
+R-HSA-6785470	Metabolism of RNA
+R-HSA-72312	Metabolism of RNA
+R-HSA-9837092	Metabolism of RNA
+R-HSA-6784531	Metabolism of RNA
+R-HSA-72203	Metabolism of RNA
+R-HSA-975956	Metabolism of RNA
+R-HSA-9711097	Cellular responses to stimuli
+R-HSA-5660526	Cellular responses to stimuli
+R-HSA-9711123	Cellular responses to stimuli
+R-HSA-3371497	Cellular responses to stimuli
+R-HSA-5661231	Cellular responses to stimuli
+R-HSA-9648895	Cellular responses to stimuli
+R-HSA-1234174	Cellular responses to stimuli
+R-HSA-5660489	Cellular responses to stimuli
+R-HSA-2559583	Cellular responses to stimuli
+R-HSA-381119	Cellular responses to stimuli
+R-HSA-2262752	Cellular responses to stimuli
+R-HSA-9707616	Cellular responses to stimuli
+R-HSA-9840373	Cellular responses to stimuli
+R-HSA-3371556	Cellular responses to stimuli
+R-HSA-192456	Digestion and absorption
+R-HSA-8963676	Digestion and absorption
+R-HSA-8935690	Digestion and absorption
+R-HSA-8963678	Digestion and absorption
+R-HSA-8981373	Digestion and absorption
+R-HSA-189085	Digestion and absorption
+R-HSA-1268020	Protein localization
+R-HSA-9033500	Protein localization
+R-HSA-9609523	Protein localization
+R-HSA-9603798	Protein localization
+R-HSA-9033241	Protein localization
+R-HSA-9613829	Autophagy
+R-HSA-9663891	Autophagy
+R-HSA-1632852	Autophagy
+R-HSA-9615710	Autophagy
+R-HSA-9729555	Sensory Perception
+R-HSA-2187338	Sensory Perception
+R-HSA-9662360	Sensory Perception
+R-HSA-9717189	Sensory Perception
+R-HSA-2453902	Sensory Perception
+R-HSA-9659379	Sensory Perception
+R-HSA-9752946	Sensory Perception
+R-HSA-2187335	Sensory Perception
+R-HSA-9662361	Sensory Perception
+R-HSA-975634	Sensory Perception
+R-HSA-9717207	Sensory Perception
+R-HSA-2514856	Sensory Perception
+R-HSA-9730628	Sensory Perception
+R-HSA-381753	Sensory Perception
+R-HSA-9755088	Drug ADME
+R-HSA-2161517	Drug ADME
+R-HSA-9748787	Drug ADME
+R-HSA-2161522	Drug ADME
+R-HSA-9753281	Drug ADME
+R-HSA-9754706	Drug ADME
+R-HSA-9757110	Drug ADME
+R-HSA-2161541	Drug ADME
+R-HSA-9749641	Drug ADME
+R-HSA-9793528	Drug ADME

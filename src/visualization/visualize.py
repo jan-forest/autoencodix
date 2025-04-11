@@ -1,10 +1,6 @@
 import warnings
 
-from numba.core.errors import NumbaDeprecationWarning
 
-warnings.simplefilter("ignore", category=NumbaDeprecationWarning)
-warnings.simplefilter(action="ignore", category=FutureWarning)
-warnings.simplefilter("ignore", category=UserWarning)
 import glob
 
 import click
@@ -15,19 +11,18 @@ import seaborn.objects as so
 from src.utils.config import get_cfg
 from src.utils.utils_basic import getlogger, read_ont_file
 
-plt.set_loglevel("WARNING")
 import os
 import pathlib
 
 import numpy as np
 import optuna
 import pandas as pd
-from matplotlib.backends.backend_pdf import PdfPages
+# from matplotlib.backends.backend_pdf import PdfPages
 
 # The above code is importing the Image module from the Python Imaging Library
 # (PIL) package. This module allows you to work with images in Python, such as
 # opening, manipulating, and saving images.
-from PIL import Image
+# from PIL import Image
 from sklearn.cluster import HDBSCAN, KMeans
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
@@ -40,11 +35,18 @@ from src.visualization.vis_crossmodalix import (
     translate_grid,
     plot_translate_latent_simple,
 )
+from seaborn import axes_style
 
-sns.set_theme(font_scale=2)
+from numba.core.errors import NumbaDeprecationWarning
+plt.set_loglevel("WARNING")
+
+warnings.simplefilter("ignore", category=NumbaDeprecationWarning)
+warnings.simplefilter(action="ignore", category=FutureWarning)
+warnings.simplefilter("ignore", category=UserWarning)
+
+sns.set_theme(font_scale=3)
 sns.set_style("white")
 sns_out_type = "png"
-from seaborn import axes_style
 so.Plot.config.theme.update(axes_style("whitegrid"))
 
 
@@ -281,6 +283,7 @@ def plot_latent_2D(
             bbox_to_anchor=(1, 1),
             ncol=legend_cols,
             title=param,
+            markerscale=3,
             frameon=False,
         )
 

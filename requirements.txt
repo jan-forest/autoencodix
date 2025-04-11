@@ -22,5 +22,6 @@ seaborn==0.13.2
 tensorboard==2.17.0
 torch==2.3.1
 torcheval==0.0.7
+torchinfo==1.8.0
 torchvision==0.18.1
 umap_learn==0.5.6
