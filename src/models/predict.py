@@ -7,6 +7,7 @@ import os
 
 import click
 import pandas as pd
+import scanpy as sc
 
 from src.models.build_models import build_stackix, build_vanilla
 from src.models.main_translate import predict_translate
@@ -117,6 +118,22 @@ def main(run_id):
     latent_space.to_parquet(
         os.path.join("reports", run_id, "predicted_latent_space.parquet")
     )
+    ## add feature here to store embeddings in h5ad file
+    if cfg["WRITE_H5AD"]:
+        for adata_file in cfg["H5AD_FILES"]:
+            logger.info(f"Writing latent space to {adata_file} as obsm X_{cfg['MODEL_TYPE']}")
+            adata = sc.read_h5ad(os.path.join(cfg["ROOT_RAW"], adata_file))
+            if cfg["MODEL_TYPE"] != "x-modalix":
+                adata.obsm["X_"+cfg["MODEL_TYPE"]] = latent_space.loc[adata.obs_names,:].to_numpy() # Ensure the order of the index is correct
+            else:
+                adata.obsm["X_x-modalix_FROM"] = latent_space.loc[
+                    ["FROM_"+sample for sample in  adata.obs_names] # Add prefix to sample names
+                ].to_numpy()
+                adata.obsm["X_x-modalix_TO"] = latent_space.loc[
+                    ["TO_"+sample for sample in  adata.obs_names] # Add prefix to sample names
+                ].to_numpy()
+
+            sc.write(adata=adata, filename=os.path.join(cfg["ROOT_RAW"], adata_file)) # Overwrite file with new embeddings
 
     # if translate is not None:
     if cfg["RECON_SAVE"] and (translate is not None):
