@@ -643,6 +643,14 @@ ATTENTION: Set the environment variable CUBLAS_WORKSPACE_CONFIG, when setting FI
 >
 > **Type:** boolean
 
+#### <code>WRITE_H5AD</code>
+
+> **Description:** Should the embedding be saved and stored in the given h5ad-files under H5AD_FILES? Will write the embedding into obsm of the anndata object with the name e.g. `X_varix` depending on the trained model type.
+>
+> **Default:** false
+>
+> **Type:** boolean
+
 ### Visualize control
 
 #### <code>CHECKPT_PLOT</code>

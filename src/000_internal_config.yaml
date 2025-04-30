@@ -70,6 +70,7 @@ NORMALIZE_RECONS_LOSS_XMODALIX: true # Should the reconstruction loss terms for 
 
 CHECKPT_SAVE: false # Should intermediate models in training be saved in models folder at checkpoint epochs? Not available for x-modalix
 RECON_SAVE: false # Should the reconstructed values of input features (x) be saved under reports?
+WRITE_H5AD: false # Should the embedding be saved and stored in the given h5ad-files under H5AD_FILES? 
 
 #  visualize control --------------------------------------------------------
 # ---------------------------------------------------------------------------
