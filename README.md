@@ -96,7 +96,7 @@ Requirements:
 ### 1.3 Mac OS
 - clone this repo:
 ```bash
-https://github.com/jan-forest/autoencodix.git
+git clone https://github.com/jan-forest/autoencodix.git
 ```
 
 - change into the repo:
