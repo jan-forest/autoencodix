@@ -94,13 +94,35 @@ Requirements:
 - if you encounter problems, see the troubleshooting section at the [end](#9-faq)
   
 ### 1.3 Mac OS
-- clone this repo
+- clone this repo:
+```bash
+git clone https://github.com/jan-forest/autoencodix.git
+```
 
-- Overwrite `Makefile` with `Makefile_macos`
+- change into the repo:
+```bash
+cd autoencodix
+```
 
-- activate env with `source venv-gallia/bin/activate`
+- Overwrite `Makefile` with `Makefile_macos`:
+```bash
+cp Makefile_macos Makefile
+```
 
-- install requirements with `make requirements`
+- Create environment with:
+```bash
+make create_environment
+```
+
+- activate environemnt with:
+```bash
+source venv-gallia/bin/activate
+```
+
+- install requirements with:
+```bash
+make requirements
+```
 
 - currently GPU support is not available for MacOS
 
