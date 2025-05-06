@@ -150,7 +150,7 @@ else
 	$(PYTHON_INTERPRETER) src/data/make_ontology.py $(RUN_ID)
 	rm data/raw/ReactomePathwaysRelation.txt
 	rm data/raw/NCBI2Reactome_All_Levels.txt
-	rm data/raw/Ensembl2Reactformaome_All_Levels.txt
+	rm data/raw/Ensembl2Reactome_All_Levels.txt
 endif
 	echo "done ontology prep"
 
