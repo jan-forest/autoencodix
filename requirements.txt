@@ -19,6 +19,7 @@ scikit-learn-extra==0.3.0
 scikit_plot==0.3.7
 scipy==1.14.0
 seaborn==0.13.2
+tiffile==2018.10.18
 tensorboard==2.17.0
 torch==2.3.1
 torcheval==0.0.7
