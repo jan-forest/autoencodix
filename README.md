@@ -151,6 +151,7 @@ To work with our framework, only three steps are necessary:
 3. Run the full pipeline via `make RUN_ID=<run_id>` 
 
 First time users should check our tutorial notebooks for more details on those steps and showcases of important options of `AUTOENCODIX`:
+- [Quick Start with a small X-Modalix use-case](Tutorials/Quick_Start.ipynb)
 - [Framework set-up and input data preparation](Tutorials/Setup_InputFormat.ipynb)
 - [Basic config specification and VAE training](Tutorials/Basics_Autoencodix.ipynb)
 - [Working with single-cell data and AUTOENCODIX](Tutorials/Basics_single-cell.ipynb)

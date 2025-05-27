@@ -892,8 +892,8 @@ def predict_translate(cfg, logger):
     to_model.to(device), from_model.to(device)
     from_latent = []
     to_latent = []
-    translation = []
-    img_img_translation = []
+    recon_translate_from_to = []
+    recon_reference_to_to = []
     from_id_list = []
     to_id_list = []
 
@@ -905,12 +905,12 @@ def predict_translate(cfg, logger):
         _, to_mu, to_logvar = to_model(to_batch)
         from_z = from_model.reparameterize(from_mu, from_logvar)
         to_z = to_model.reparameterize(to_mu, to_logvar)
-        translated_to = to_model.decode(from_z)
-        translated = to_model.decode(to_z)
+        batch_recon_translate_from_to = to_model.decode(from_z)
+        batch_recon_reference_to_to = to_model.decode(to_z)
         from_id_list.append(batch_ids)
         from_latent.append(from_z.cpu().detach())
-        translation.append(translated.cpu().detach())
-        img_img_translation.append(translated_to.cpu().detach())
+        recon_translate_from_to.append(batch_recon_translate_from_to.cpu().detach())
+        recon_reference_to_to.append(batch_recon_reference_to_to.cpu().detach())
 
         to_batch = to_batch.to(device)
         _, to_mu, to_logvar = to_model(to_batch)
@@ -922,9 +922,9 @@ def predict_translate(cfg, logger):
     from_latent_space = torch.cat(from_latent, dim=0).numpy()
     to_latent_space = torch.cat(to_latent, dim=0).numpy()
 
-    translation = np.concatenate(translation, axis=0)
-    img_img_translation = np.concatenate(img_img_translation, axis=0)
-    logger.info(f"concat translation shape: {translation.shape}")
+    recon_translate_from_to = np.concatenate(recon_translate_from_to, axis=0)
+    recon_reference_to_to = np.concatenate(recon_reference_to_to, axis=0)
+    logger.info(f"concat recon_translate shape: {recon_translate_from_to.shape}")
     from_id_list = np.concatenate(from_id_list, axis=0)
     to_id_list = np.concatenate(to_id_list, axis=0)
 
@@ -946,15 +946,19 @@ def predict_translate(cfg, logger):
     logger.debug(f"columns: {predict_loader.dataset.get_cols(direction='from')}")
 
     if cfg["DATA_TYPE"][to_input_key]["TYPE"] == "IMG":
-        logger.info(f" len of loop: {translation.shape[0]}")
+        logger.info(f" len of loop: {recon_translate_from_to.shape[0]}")
         sample_file = os.path.join(
             cfg["ROOT_RAW"], cfg["DATA_TYPE"][to_input_key]["FILE_RAW"]
         )
         samples = pd.read_csv(sample_file, index_col=0, sep=cfg["DELIM"])
         file_ext = samples["img_paths"][0].split(".")[-1]
 
-        if not os.path.exists(os.path.join("reports", cfg["RUN_ID"], "IMGS")):
-            os.makedirs(os.path.join("reports", cfg["RUN_ID"], "IMGS"), exist_ok=True)
+        if not os.path.exists(os.path.join("reports", cfg["RUN_ID"], "Translate_FROM_TO_IMG")):
+            os.makedirs(os.path.join("reports", cfg["RUN_ID"], "Translate_FROM_TO_IMG"), exist_ok=True)
+        if not os.path.exists(os.path.join("reports", cfg["RUN_ID"], "Reference_TO_TO_IMG")):
+            os.makedirs(
+                os.path.join("reports", cfg["RUN_ID"], "Reference_TO_TO_IMG"), exist_ok=True
+            )
 
             ## Create Images for Clinic Param Centers
         anno_name = [
@@ -982,13 +986,13 @@ def predict_translate(cfg, logger):
                 # param = cfg['CLINIC_PARAM'][0] ## Use the first
                 if not (type(clin_data[param].iloc[0]) is str):
                     logger.info(
-                        f"The provided label column is numeric and converted to categories."
+                        "The provided label column is numeric and converted to categories."
                     )
                     if len(np.unique(clin_data[param])) > 3:
                         labels = pd.qcut(
                             clin_data[param],
                             q=4,
-                            labels=["1stQ", "2ndQ", f"3rdQ", f"4thQ"],
+                            labels=["1stQ", "2ndQ", "3rdQ", "4thQ"],
                         ).astype(str)
                     else:
                         labels = [str(x) for x in clin_data[param]]
@@ -999,89 +1003,87 @@ def predict_translate(cfg, logger):
                     from_latent_space.join(clin_data.loc[:, param], how="inner")
                     .groupby([param])
                     .median()
-                )  ## TODO check if median or mean?
+                )  
                 to_mean_latent_group = (
                     to_latent_space.join(clin_data.loc[:, param], how="inner")
                     .groupby([param])
                     .median()
                 )
 
-                from_translated_group = to_model.decode(
+                recon_translate_from_to_group = to_model.decode(
                     torch.tensor(from_mean_latent_group.values).to(device)
                 )
-                from_translated_group = np.concatenate(
-                    [from_translated_group.cpu().detach()], axis=0
+                recon_translate_from_to_group = np.concatenate(
+                    [recon_translate_from_to_group.cpu().detach()], axis=0
                 )
 
-                to_translated_group = to_model.decode(
+                recon_reference_to_to_group = to_model.decode(
                     torch.tensor(to_mean_latent_group.values).to(device)
                 )
-                to_translated_group = np.concatenate(
-                    [to_translated_group.cpu().detach()], axis=0
+                recon_reference_to_to_group = np.concatenate(
+                    [recon_reference_to_to_group.cpu().detach()], axis=0
                 )
 
-                for center in range(from_translated_group.shape[0]):
-                    from_filename = f"from_center_{from_mean_latent_group.index[center]}-{param}.png"
-                    to_filename = (
-                        f"to_center_{to_mean_latent_group.index[center]}-{param}.png"
+                for center in range(recon_translate_from_to_group.shape[0]):
+                    translate_filename = f"Translation_FROM_TO_center_{from_mean_latent_group.index[center]}-{param}.png"
+                    reference_filename = (
+                        f"Reference_TO_TO_center_{to_mean_latent_group.index[center]}-{param}.png"
                     )
-                    logger.info(f"writing image {from_filename}")
+                    logger.info(f"writing image {translate_filename}")
                     filepath = os.path.join(
-                        "reports", cfg["RUN_ID"], "IMGS", from_filename
+                        "reports", cfg["RUN_ID"], "Translate_FROM_TO_IMG", translate_filename
                     )
 
-                    cur_img = from_translated_group[center, :, :, :]
-                    cur_img = cur_img.transpose(1, 2, 0)
-                    cur_img = (cur_img * 255).astype(np.uint8)
-                    cv2.imwrite(filepath, cur_img)
+                    translate_img = recon_translate_from_to_group[center, :, :, :]
+                    translate_img = translate_img.transpose(1, 2, 0)
+                    translate_img = (translate_img * 255).astype(np.uint8)
+                    cv2.imwrite(filepath, translate_img)
 
-                    logger.info(f"writing image {to_filename}")
+                    logger.info(f"writing image {reference_filename}")
                     filepath = os.path.join(
-                        "reports", cfg["RUN_ID"], "IMGS", to_filename
+                        "reports", cfg["RUN_ID"], "Reference_TO_TO_IMG", reference_filename
                     )
-                    cur_img = to_translated_group[center, :, :, :]
-                    cur_img = cur_img.transpose(1, 2, 0)
-                    cur_img = (cur_img * 255).astype(np.uint8)
-                    cv2.imwrite(filepath, cur_img)
+                    reference_img = recon_reference_to_to_group[center, :, :, :]
+                    reference_img = reference_img.transpose(1, 2, 0)
+                    reference_img = (reference_img * 255).astype(np.uint8)
+                    cv2.imwrite(filepath, reference_img)
 
         ## Make Image reconstruction
         logger.info(f"writing image reconstruction")
-        if not os.path.exists(os.path.join("reports", cfg["RUN_ID"], "IMGS")):
-            os.makedirs(os.path.join("reports", cfg["RUN_ID"], "IMGS"), exist_ok=True)
-        if not os.path.exists(os.path.join("reports", cfg["RUN_ID"], "IMGS_IMG")):
-            os.makedirs(
-                os.path.join("reports", cfg["RUN_ID"], "IMGS_IMG"), exist_ok=True
-            )
-        for i in range(translation.shape[0]):
+
+        for i in range(recon_translate_from_to.shape[0]):
 
             filename = f"{from_id_list[i]}.{file_ext}"
             # logger.info(f"writing image {filename}")
-            filepath = os.path.join("reports", cfg["RUN_ID"], "IMGS", filename)
-            filepath_img = os.path.join("reports", cfg["RUN_ID"], "IMGS_IMG", filename)
+            filepath_translate = os.path.join("reports", cfg["RUN_ID"], "Translate_FROM_TO_IMG", filename)
+            filepath_reference = os.path.join("reports", cfg["RUN_ID"], "Reference_TO_TO_IMG", filename)
 
-            cur_img = translation[i, :, :, :]
-            cur_img_img = img_img_translation[i, :, :, :]
+            translated_img = recon_translate_from_to[i, :, :, :]
+            reference_img = recon_reference_to_to[i, :, :, :]
             # print(f"shape cur_image{cur_img.shape}")
-            cur_img = cur_img.transpose(1, 2, 0)
-            cur_img_img = cur_img_img.transpose(1, 2, 0)
+            translated_img = translated_img.transpose(1, 2, 0)
+            reference_img = reference_img.transpose(1, 2, 0)
             # if file_ext in "tiff":
             #     cv2.imwrite(filepath, cur_img)
             # else:
-            cur_img = (cur_img * 255).astype(np.uint8)
-            cur_img_img = (cur_img_img * 255).astype(np.uint8)
-            cv2.imwrite(filepath, cur_img)
-            cv2.imwrite(filepath_img, cur_img_img)
+            translated_img = (translated_img * 255).astype(np.uint8)
+            reference_img = (reference_img * 255).astype(np.uint8)
+            cv2.imwrite(filepath_translate, translated_img)
+            cv2.imwrite(filepath_reference, reference_img)
+        # Return IMG case
         return (
             from_latent_space,
             to_latent_space,
-            pd.DataFrame(translation.reshape(translation.shape[0], -1)),
+            pd.DataFrame(recon_translate_from_to.reshape(recon_translate_from_to.shape[0], -1)),
         )
+
     translation = pd.DataFrame(
-        translation,
+        recon_translate_from_to,
         index=to_id_list,
         columns=predict_loader.dataset.get_cols(direction="to"),
     )
     translation["shape"] = str(translation.shape)
+    # Return non-IMG case
     return from_latent_space, to_latent_space, translation
 
 
