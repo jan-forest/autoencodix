@@ -70,12 +70,14 @@ config:
 	# if not, copy config.yaml to run_id_config.yaml
 	# if yes copy the existing run_id_config.yaml to reports/$(RUN_ID)/$(RUN_ID)_config.yaml
 	if [ ! -f $(RUN_ID)_config.yaml ]; then \
-		sed -i '' '/RUN_ID/d' config.yaml; \
+		# sed -i '' '/RUN_ID/d' config.yaml; \
+		sed -i '/RUN_ID/d' config.yaml; \
 		echo "RUN_ID: $(RUN_ID)" >> config.yaml; \
 		cp config.yaml reports/$(RUN_ID)/$(RUN_ID)_config.yaml; \
 	fi
 	if [ -f $(RUN_ID)_config.yaml ]; then \
-		sed -i '' '/RUN_ID/d' $(RUN_ID)_config.yaml; \
+		# sed -i '' '/RUN_ID/d' $(RUN_ID)_config.yaml; \
+		sed -i '/RUN_ID/d' $(RUN_ID)_config.yaml; \
 		echo "RUN_ID: $(RUN_ID)" >> $(RUN_ID)_config.yaml; \
 		cp $(RUN_ID)_config.yaml reports/$(RUN_ID)/$(RUN_ID)_config.yaml; \
 	fi
