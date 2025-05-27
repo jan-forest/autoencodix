@@ -11,10 +11,10 @@ from src.utils.utils_basic import getlogger
 sns_out_type = "png"
 
 
-def translate_grid(cfg, img_root, clin_data, param, save_fig=""):
-    img_sample_list = []
-    from_center_list = []
-    to_center_list = []
+def translate_grid(cfg, translate_root, reference_root, clin_data, param, save_fig=""):
+    translate_img_sample_list = []
+    translate_list = []
+    reference_list = []
     nrandom = 3
 
     supported_extensions = [
@@ -45,33 +45,34 @@ def translate_grid(cfg, img_root, clin_data, param, save_fig=""):
         clin_data[param] = labels
 
     for ext in supported_extensions:
-        for img_file in sorted(glob.glob(img_root + "*." + ext)):
-            img_sample_list.append(
-                img_file.removeprefix(img_root).removesuffix("." + ext)
+        for img_file in sorted(glob.glob(translate_root + "*." + ext)):
+            translate_img_sample_list.append(
+                img_file.removeprefix(translate_root).removesuffix("." + ext)
             )
-            if "from_center_" in img_file:
+            if "Translation_FROM_TO_center_" in img_file:
                 # print(img_file.removeprefix(img_root+"from_center_").removesuffix(".png"))
                 if (
-                    img_file.removeprefix(img_root + "from_center_").removesuffix(
+                    img_file.removeprefix(translate_root + "Translation_FROM_TO_center_").removesuffix(
                         "-" + param + ".png"
                     )
                     in clin_data[param].unique()
                 ):
-                    from_center_list.append(img_file.removeprefix(img_root))
-            if "to_center_" in img_file:
+                    translate_list.append(img_file.removeprefix(translate_root))
+        for img_file in sorted(glob.glob(reference_root + "*." + ext)):
+            if "Reference_TO_TO_center_" in img_file:
                 if (
-                    img_file.removeprefix(img_root + "to_center_").removesuffix(
+                    img_file.removeprefix(reference_root + "Reference_TO_TO_center_").removesuffix(
                         "-" + param + ".png"
                     )
                     in clin_data[param].unique()
                 ):
-                    to_center_list.append(img_file.removeprefix(img_root))
+                    reference_list.append(img_file.removeprefix(reference_root))
             # print(img_file.removeprefix(img_root).removesuffix(".png"))
 
-    img_sample_list = clin_data.index.intersection(img_sample_list)
+    translate_img_sample_list = clin_data.index.intersection(translate_img_sample_list)
     try:
         rand_sample_param = (
-            clin_data.loc[img_sample_list, [param, "SPLIT"]]
+            clin_data.loc[translate_img_sample_list, [param, "SPLIT"]]
             .loc[clin_data["SPLIT"] == "test", :]
             .groupby(param)
             .sample(n=nrandom, replace=False, random_state=cfg["GLOBAL_SEED"])
@@ -82,28 +83,28 @@ def translate_grid(cfg, img_root, clin_data, param, save_fig=""):
         )
         nrandom = 1
         rand_sample_param = (
-            clin_data.loc[img_sample_list, [param, "SPLIT"]]
+            clin_data.loc[translate_img_sample_list, [param, "SPLIT"]]
             .groupby(param)
             .sample(n=nrandom, replace=False, random_state=cfg["GLOBAL_SEED"])
         )
     # Define labels
-    row_labels = ["FROM Center", "TO Center"] + [
-        "FROM_TO test pick " + str(x) for x in range(1, nrandom + 1)
+    row_labels = ["Translate FROM_TO Center", "Reference TO_TO Center"] + [
+        "Translate test pick " + str(x) for x in range(1, nrandom + 1)
     ]
     if nrandom == 1:
-        row_labels = ["FROM Center", "TO Center"] + [
-            "FROM_TO random pick " + str(x) for x in range(1, nrandom + 1)
+        row_labels = ["Translate Center", "Reference Center"] + [
+            "Translate random pick " + str(x) for x in range(1, nrandom + 1)
         ]
     col_labels = [
-        file.removeprefix("from_center_").removesuffix("-" + param + ".png")
-        for file in from_center_list
+        file.removeprefix("Translation_FROM_TO_center_").removesuffix("-" + param + ".png")
+        for file in translate_list
     ]
     # Create figure and axes
     single_size = 2
     fig, axes = plt.subplots(
         nrandom + 2,
-        len(from_center_list),
-        figsize=(len(from_center_list) * single_size, (nrandom + 2) * single_size),
+        len(translate_list),
+        figsize=(len(translate_list) * single_size, (nrandom + 2) * single_size),
     )
     fig.subplots_adjust(
         left=0.1, right=0.9, bottom=0.1, top=0.9, wspace=0.4, hspace=0.4
@@ -111,15 +112,15 @@ def translate_grid(cfg, img_root, clin_data, param, save_fig=""):
 
     # Plot images and add labels
     for i, ax in enumerate(axes.flat):
-        row = int(i / len(from_center_list))
+        row = int(i / len(translate_list))
         if row == 0:  ## First row
-            ax.imshow(np.asarray(Image.open(img_root + from_center_list[i])))
+            ax.imshow(np.asarray(Image.open(translate_root + translate_list[i])))
             ax.axis("off")
         else:
             if row == 1:  ## Second row
                 ax.imshow(
                     np.asarray(
-                        Image.open(img_root + to_center_list[i - len(from_center_list)])
+                        Image.open(reference_root + reference_list[i - len(translate_list)])
                     )
                 )
                 ax.axis("off")
@@ -127,21 +128,21 @@ def translate_grid(cfg, img_root, clin_data, param, save_fig=""):
                 test_sample = rand_sample_param[
                     rand_sample_param[param] == col_labels[i % len(col_labels)]
                 ].index[row - 2]
-                file_img = glob.glob(img_root + test_sample + ".*")
+                file_img = glob.glob(translate_root + test_sample + ".*")
                 ax.imshow(np.asarray(Image.open(file_img[0])))
                 ax.axis("off")
         # Add row labels
-        if i % len(from_center_list) == 0:
+        if i % len(translate_list) == 0:
             ax.text(
                 -0.5,
                 0.5,
-                row_labels[i // len(from_center_list)],
+                row_labels[i // len(translate_list)],
                 va="center",
                 ha="right",
                 transform=ax.transAxes,
             )
         # Add column labels
-        if i < len(from_center_list):
+        if i < len(translate_list):
             ax.text(
                 0.5,
                 1.1,

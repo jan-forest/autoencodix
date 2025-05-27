@@ -707,14 +707,21 @@ def main(run_id):
 
     ## Plot Coverage if available ##
     if cfg["CHECKPT_PLOT"] and (not cfg["MODEL_TYPE"] == "x-modalix"):
-        lat_coverage_epoch = pd.read_parquet(
-            os.path.join(
+        # Check if coverage file exists
+        cov_file = os.path.join(
                 "reports",
                 f"{cfg['RUN_ID']}",
                 f'latent_cov_per_epoch_{cfg["RUN_ID"]}.parquet',
             )
-        )
-        plot_cov_epoch(cfg=cfg, lat_coverage_epoch=lat_coverage_epoch)
+        if os.path.exists(cov_file):        
+            lat_coverage_epoch = pd.read_parquet(
+                os.path.join(
+                    "reports",
+                    f"{cfg['RUN_ID']}",
+                    f'latent_cov_per_epoch_{cfg["RUN_ID"]}.parquet',
+                )
+            )
+            plot_cov_epoch(cfg=cfg, lat_coverage_epoch=lat_coverage_epoch)
 
     anno_name = [
         data_type
@@ -887,7 +894,8 @@ def main(run_id):
             if to_data_type == "IMG":
                 plot2 = translate_grid(
                     cfg=cfg,
-                    img_root=os.path.join("reports", run_id, "IMGS", ""),
+                    translate_root=os.path.join("reports", run_id, "Translate_FROM_TO_IMG", ""),
+                    reference_root=os.path.join("reports", run_id, "Reference_TO_TO_IMG", ""),
                     clin_data=clin_data,
                     param=param,
                     save_fig=os.path.join(
