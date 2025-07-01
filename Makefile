@@ -11,13 +11,29 @@ PROJECT_NAME = venv-gallia
 PYTHON_INTERPRETER = python3
 RUN_ID = $1
 OLD_RUN_ID = $2
-PYV = $(shell $(PYTHON_INTERPRETER) -c "import sys;t='{v[0]}.{v[1]}'.format(v=list(sys.version_info[:2]));sys.stdout.write(t)")
 UV_EXISTS := $(shell command -v uv 2> /dev/null)
-ifeq ($(UV_EXISTS),)
-    @echo ">>> Installing uv..."
-    curl -LsSf https://astral.sh/uv/install.sh | sh
+
+PYV = $(shell $(PYTHON_INTERPRETER) -c "import sys;t='{v[0]}.{v[1]}'.format(v=list(sys.version_info[:2]));sys.stdout.write(t)")
+PYV_MAJOR = $(shell $(PYTHON_INTERPRETER) -c "import sys;print(sys.version_info.major)")
+PYV_MINOR = $(shell $(PYTHON_INTERPRETER) -c "import sys;print(sys.version_info.minor)")
+
+# Check if Python version is 3.10 or greater
+PYTHON_VERSION_CHECK := $(shell $(PYTHON_INTERPRETER) -c "import sys; exit(0 if sys.version_info >= (3, 10) else 1)" 2>/dev/null; echo $$?)
+ifneq ($(PYTHON_VERSION_CHECK),0)
+    $(error Python 3.10 or higher required. Found Python $(PYV). Please start the Jupyter Notebook within the venv-gallia environment with Python 3.10 or higher.)
 endif
-# convert to integer
+
+# PLATFORM DETECTION
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+$(info Detected platform: macOS)
+SED_INPLACE = sed -i ''
+else ifeq ($(UNAME_S),Linux)
+$(info Detected platform: Linux)
+SED_INPLACE = sed -i
+else
+$(error This Makefile is for macOS and Linux only. For Windows, please use: cp Makefile_windows Makefile)
+endif
 
 # HELPERS TO CONTROL PYTHON VERSIONS --------------------------------------------------------
 # Function to convert version numbers to a numeric representation
@@ -42,46 +58,48 @@ endif
 
 ## Install Python Dependencies
 requirements: test_environment
-	uv pip install -e .
-	uv pip install -r requirements.txt
-	touch src/utils/__init__.py
-	touch src/data/__init__.py
-	touch src/features/__init__.py
-	touch src/models/__init__.py
-	touch src/models/tuning/__init__.py
-	touch src/visualization/__init__.py
+	@echo "Installing Python dependencies..."
+ifeq ($(UV_EXISTS),)
+	@echo ">>> Installing uv..."
+	@curl -LsSf https://astral.sh/uv/install.sh | sh
+endif
+	@uv pip install -e .
+	@uv pip install -r requirements.txt
+	@touch src/utils/__init__.py
+	@touch src/data/__init__.py
+	@touch src/features/__init__.py
+	@touch src/models/__init__.py
+	@touch src/models/tuning/__init__.py
+	@touch src/visualization/__init__.py
+	@echo "✓ Dependencies installed"
 
 config:
-	mkdir -p data/processed
-	mkdir -p data/raw
-	mkdir -p data/raw/images
-	mkdir -p reports
-	mkdir -p reports/figures
-	mkdir -p models
-	mkdir -p models/tuning/${RUN_ID}
-	mkdir -p data/interim/$(RUN_ID)
-	mkdir -p data/processed/$(RUN_ID)
-	mkdir -p models/$(RUN_ID)
-	mkdir -p models/tuned/$(RUN_ID)
-	mkdir -p reports/$(RUN_ID)
-	mkdir -p reports/$(RUN_ID)/figures
+	@echo "Setting up directories and configuration for RUN_ID: $(RUN_ID)"
+	@mkdir -p data/processed
+	@mkdir -p data/raw
+	@mkdir -p data/raw/images
+	@mkdir -p reports
+	@mkdir -p reports/figures
+	@mkdir -p models
+	@mkdir -p models/tuning/${RUN_ID}
+	@mkdir -p data/interim/$(RUN_ID)
+	@mkdir -p data/processed/$(RUN_ID)
+	@mkdir -p models/$(RUN_ID)
+	@mkdir -p models/tuned/$(RUN_ID)
+	@mkdir -p reports/$(RUN_ID)
+	@mkdir -p reports/$(RUN_ID)/figures
 
-	# check if run_id_config.yaml exists
-	# if not, copy config.yaml to run_id_config.yaml
-	# if yes copy the existing run_id_config.yaml to reports/$(RUN_ID)/$(RUN_ID)_config.yaml
-	if [ ! -f $(RUN_ID)_config.yaml ]; then \
-		# sed -i '' '/RUN_ID/d' config.yaml; \
-		sed -i '/RUN_ID/d' config.yaml; \
+	@if [ ! -f $(RUN_ID)_config.yaml ]; then \
+		$(SED_INPLACE) '/RUN_ID/d' config.yaml; \
 		echo "RUN_ID: $(RUN_ID)" >> config.yaml; \
 		cp config.yaml reports/$(RUN_ID)/$(RUN_ID)_config.yaml; \
 	fi
-	if [ -f $(RUN_ID)_config.yaml ]; then \
-		# sed -i '' '/RUN_ID/d' $(RUN_ID)_config.yaml; \
-		sed -i '/RUN_ID/d' $(RUN_ID)_config.yaml; \
+	@if [ -f $(RUN_ID)_config.yaml ]; then \
+		$(SED_INPLACE) '/RUN_ID/d' $(RUN_ID)_config.yaml; \
 		echo "RUN_ID: $(RUN_ID)" >> $(RUN_ID)_config.yaml; \
 		cp $(RUN_ID)_config.yaml reports/$(RUN_ID)/$(RUN_ID)_config.yaml; \
 	fi
-	echo "done config"
+	@echo "✓ Configuration complete"
 
 
 
