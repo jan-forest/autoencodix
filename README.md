@@ -66,34 +66,6 @@ Requirements:
   
 
 ### 1.1 Linux-based
-
-- clone this repo
-
-- create environment with: `make create_environment`
-
-- activate env with `source venv-gallia/bin/activate`
-
-- install requirements with `make requirements`
-
-  
-  
-
-### 1.2 Windows-based
-- to use the Makefile in Windows you need to install `make`
-
-- See https://linuxhint.com/run-makefile-windows/
-
-- Move `Makefile_windows` to `Makefile`
-
-- create environment with: `make create_environment`
-
-- activate env with `.\venv-gallia\Scripts\activate`
-
-- install requirements with `make requirements`
-
-- if you encounter problems, see the troubleshooting section at the [end](#9-faq)
-  
-### 1.3 Mac OS
 - clone this repo:
 ```bash
 git clone https://github.com/jan-forest/autoencodix.git
@@ -102,11 +74,6 @@ git clone https://github.com/jan-forest/autoencodix.git
 - change into the repo:
 ```bash
 cd autoencodix
-```
-
-- Overwrite `Makefile` with `Makefile_macos`:
-```bash
-cp Makefile_macos Makefile
 ```
 
 - Create environment with:
@@ -125,6 +92,25 @@ make requirements
 ```
 
 - currently GPU support is not available for MacOS
+
+  
+
+### 1.2 Windows-based
+- to use the Makefile in Windows you need to install `make`
+
+- See https://linuxhint.com/run-makefile-windows/
+
+- Move `Makefile_windows` to `Makefile`
+
+- create environment with: `make create_environment`
+
+- activate env with `.\venv-gallia\Scripts\activate`
+
+- install requirements with `make requirements`
+
+- if you encounter problems, see the troubleshooting section at the [end](#9-faq)
+  
+### 1.3 Mac OS
 
 ### 1.4 HPC Cluster
 

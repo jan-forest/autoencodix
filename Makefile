@@ -17,7 +17,14 @@ ifeq ($(UV_EXISTS),)
     @echo ">>> Installing uv..."
     curl -LsSf https://astral.sh/uv/install.sh | sh
 endif
-# convert to integer
+
+# PLATFORM DETECTION
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+    SED_INPLACE = sed -i ''
+else
+    SED_INPLACE = sed -i
+endif
 
 # HELPERS TO CONTROL PYTHON VERSIONS --------------------------------------------------------
 # Function to convert version numbers to a numeric representation
@@ -42,46 +49,44 @@ endif
 
 ## Install Python Dependencies
 requirements: test_environment
-	uv pip install -e .
-	uv pip install -r requirements.txt
-	touch src/utils/__init__.py
-	touch src/data/__init__.py
-	touch src/features/__init__.py
-	touch src/models/__init__.py
-	touch src/models/tuning/__init__.py
-	touch src/visualization/__init__.py
+	@echo "Installing Python dependencies..."
+	@uv pip install -e .
+	@uv pip install -r requirements.txt
+	@touch src/utils/__init__.py
+	@touch src/data/__init__.py
+	@touch src/features/__init__.py
+	@touch src/models/__init__.py
+	@touch src/models/tuning/__init__.py
+	@touch src/visualization/__init__.py
+	@echo "✓ Dependencies installed"
 
 config:
-	mkdir -p data/processed
-	mkdir -p data/raw
-	mkdir -p data/raw/images
-	mkdir -p reports
-	mkdir -p reports/figures
-	mkdir -p models
-	mkdir -p models/tuning/${RUN_ID}
-	mkdir -p data/interim/$(RUN_ID)
-	mkdir -p data/processed/$(RUN_ID)
-	mkdir -p models/$(RUN_ID)
-	mkdir -p models/tuned/$(RUN_ID)
-	mkdir -p reports/$(RUN_ID)
-	mkdir -p reports/$(RUN_ID)/figures
+	@echo "Setting up directories and configuration for RUN_ID: $(RUN_ID)"
+	@mkdir -p data/processed
+	@mkdir -p data/raw
+	@mkdir -p data/raw/images
+	@mkdir -p reports
+	@mkdir -p reports/figures
+	@mkdir -p models
+	@mkdir -p models/tuning/${RUN_ID}
+	@mkdir -p data/interim/$(RUN_ID)
+	@mkdir -p data/processed/$(RUN_ID)
+	@mkdir -p models/$(RUN_ID)
+	@mkdir -p models/tuned/$(RUN_ID)
+	@mkdir -p reports/$(RUN_ID)
+	@mkdir -p reports/$(RUN_ID)/figures
 
-	# check if run_id_config.yaml exists
-	# if not, copy config.yaml to run_id_config.yaml
-	# if yes copy the existing run_id_config.yaml to reports/$(RUN_ID)/$(RUN_ID)_config.yaml
-	if [ ! -f $(RUN_ID)_config.yaml ]; then \
-		# sed -i '' '/RUN_ID/d' config.yaml; \
-		sed -i '/RUN_ID/d' config.yaml; \
+	@if [ ! -f $(RUN_ID)_config.yaml ]; then \
+		$(SED_INPLACE) '/RUN_ID/d' config.yaml; \
 		echo "RUN_ID: $(RUN_ID)" >> config.yaml; \
 		cp config.yaml reports/$(RUN_ID)/$(RUN_ID)_config.yaml; \
 	fi
-	if [ -f $(RUN_ID)_config.yaml ]; then \
-		# sed -i '' '/RUN_ID/d' $(RUN_ID)_config.yaml; \
-		sed -i '/RUN_ID/d' $(RUN_ID)_config.yaml; \
+	@if [ -f $(RUN_ID)_config.yaml ]; then \
+		$(SED_INPLACE) '/RUN_ID/d' $(RUN_ID)_config.yaml; \
 		echo "RUN_ID: $(RUN_ID)" >> $(RUN_ID)_config.yaml; \
 		cp $(RUN_ID)_config.yaml reports/$(RUN_ID)/$(RUN_ID)_config.yaml; \
 	fi
-	echo "done config"
+	@echo "✓ Configuration complete"
 
 
 
@@ -154,7 +159,7 @@ else
 	rm data/raw/NCBI2Reactome_All_Levels.txt
 	rm data/raw/Ensembl2Reactome_All_Levels.txt
 endif
-	echo "done ontology prep"
+	@echo "done ontology prep"
 
 # Format single cell data sets
 format_singlecell: config
@@ -163,35 +168,35 @@ format_singlecell: config
 ## Make Dataset
 data: config
 	$(PYTHON_INTERPRETER) src/data/make_dataset.py $(RUN_ID)
-	echo "done data"
+	@echo "done data"
 
 data_only: config
 	$(PYTHON_INTERPRETER) src/data/make_dataset.py $(RUN_ID)
-	echo "done data only"
+	@echo "done data only"
 
 model: data
 	$(PYTHON_INTERPRETER) src/models/train.py $(RUN_ID)
-	echo "Done training"
+	@echo "Done training"
 
 model_only: config
 	$(PYTHON_INTERPRETER) src/models/train.py $(RUN_ID)
-	echo "Done training only"
+	@echo "Done training only"
 
 prediction: model
 	$(PYTHON_INTERPRETER) src/models/predict.py $(RUN_ID)
-	echo "Done predicting"
+	@echo "Done predicting"
 
 prediction_only: config
 	$(PYTHON_INTERPRETER) src/models/predict.py $(RUN_ID)
-	echo "Done predicting only"
+	@echo "Done predicting only"
 
 visualize: prediction
 	$(PYTHON_INTERPRETER) src/visualization/visualize.py $(RUN_ID)
-	echo "Done visualizing"
+	@echo "Done visualizing"
 
 visualize_only: config
 	$(PYTHON_INTERPRETER) src/visualization/visualize.py $(RUN_ID)
-	echo "Done visualizing only"
+	@echo "Done visualizing only"
 
 train_n_visualize: config
 	$(PYTHON_INTERPRETER) src/models/train.py $(RUN_ID)
@@ -202,10 +207,10 @@ train_n_visualize: config
 
 ml_task: visualize
 	$(PYTHON_INTERPRETER) src/visualization/ml_task.py $(RUN_ID)
-	echo "Done ml_task"
+	@echo "Done ml_task"
 ml_task_only: config
 	$(PYTHON_INTERPRETER) src/visualization/ml_task.py $(RUN_ID)
-	echo "Done Ml task only"
+	@echo "Done Ml task only"
 
 ## Delete all compiled Python files
 clean:
