@@ -11,15 +11,28 @@ PROJECT_NAME = venv-gallia
 PYTHON_INTERPRETER = python3
 RUN_ID = $1
 OLD_RUN_ID = $2
-PYV = $(shell $(PYTHON_INTERPRETER) -c "import sys;t='{v[0]}.{v[1]}'.format(v=list(sys.version_info[:2]));sys.stdout.write(t)")
 UV_EXISTS := $(shell command -v uv 2> /dev/null)
+
+PYV = $(shell $(PYTHON_INTERPRETER) -c "import sys;t='{v[0]}.{v[1]}'.format(v=list(sys.version_info[:2]));sys.stdout.write(t)")
+PYV_MAJOR = $(shell $(PYTHON_INTERPRETER) -c "import sys;print(sys.version_info.major)")
+PYV_MINOR = $(shell $(PYTHON_INTERPRETER) -c "import sys;print(sys.version_info.minor)")
+
+# Check if Python version is 3.10 or greater
+PYTHON_VERSION_CHECK := $(shell $(PYTHON_INTERPRETER) -c "import sys; exit(0 if sys.version_info >= (3, 10) else 1)" 2>/dev/null; echo $$?)
+ifneq ($(PYTHON_VERSION_CHECK),0)
+    $(error Python 3.10 or higher required. Found Python $(PYV). Please start the Jupyter Notebook within the venv-gallia environment with Python 3.10 or higher.)
+endif
 
 # PLATFORM DETECTION
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
-    SED_INPLACE = sed -i ''
+$(info Detected platform: macOS)
+SED_INPLACE = sed -i ''
+else ifeq ($(UNAME_S),Linux)
+$(info Detected platform: Linux)
+SED_INPLACE = sed -i
 else
-    SED_INPLACE = sed -i
+$(error This Makefile is for macOS and Linux only. For Windows, please use: cp Makefile_windows Makefile)
 endif
 
 # HELPERS TO CONTROL PYTHON VERSIONS --------------------------------------------------------
