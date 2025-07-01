@@ -13,10 +13,6 @@ RUN_ID = $1
 OLD_RUN_ID = $2
 PYV = $(shell $(PYTHON_INTERPRETER) -c "import sys;t='{v[0]}.{v[1]}'.format(v=list(sys.version_info[:2]));sys.stdout.write(t)")
 UV_EXISTS := $(shell command -v uv 2> /dev/null)
-ifeq ($(UV_EXISTS),)
-    @echo ">>> Installing uv..."
-    curl -LsSf https://astral.sh/uv/install.sh | sh
-endif
 
 # PLATFORM DETECTION
 UNAME_S := $(shell uname -s)
@@ -50,6 +46,10 @@ endif
 ## Install Python Dependencies
 requirements: test_environment
 	@echo "Installing Python dependencies..."
+ifeq ($(UV_EXISTS),)
+	@echo ">>> Installing uv..."
+	@curl -LsSf https://astral.sh/uv/install.sh | sh
+endif
 	@uv pip install -e .
 	@uv pip install -r requirements.txt
 	@touch src/utils/__init__.py
@@ -159,7 +159,7 @@ else
 	rm data/raw/NCBI2Reactome_All_Levels.txt
 	rm data/raw/Ensembl2Reactome_All_Levels.txt
 endif
-	@echo "done ontology prep"
+	echo "done ontology prep"
 
 # Format single cell data sets
 format_singlecell: config
@@ -168,35 +168,35 @@ format_singlecell: config
 ## Make Dataset
 data: config
 	$(PYTHON_INTERPRETER) src/data/make_dataset.py $(RUN_ID)
-	@echo "done data"
+	echo "done data"
 
 data_only: config
 	$(PYTHON_INTERPRETER) src/data/make_dataset.py $(RUN_ID)
-	@echo "done data only"
+	echo "done data only"
 
 model: data
 	$(PYTHON_INTERPRETER) src/models/train.py $(RUN_ID)
-	@echo "Done training"
+	echo "Done training"
 
 model_only: config
 	$(PYTHON_INTERPRETER) src/models/train.py $(RUN_ID)
-	@echo "Done training only"
+	echo "Done training only"
 
 prediction: model
 	$(PYTHON_INTERPRETER) src/models/predict.py $(RUN_ID)
-	@echo "Done predicting"
+	echo "Done predicting"
 
 prediction_only: config
 	$(PYTHON_INTERPRETER) src/models/predict.py $(RUN_ID)
-	@echo "Done predicting only"
+	echo "Done predicting only"
 
 visualize: prediction
 	$(PYTHON_INTERPRETER) src/visualization/visualize.py $(RUN_ID)
-	@echo "Done visualizing"
+	echo "Done visualizing"
 
 visualize_only: config
 	$(PYTHON_INTERPRETER) src/visualization/visualize.py $(RUN_ID)
-	@echo "Done visualizing only"
+	echo "Done visualizing only"
 
 train_n_visualize: config
 	$(PYTHON_INTERPRETER) src/models/train.py $(RUN_ID)
@@ -207,10 +207,10 @@ train_n_visualize: config
 
 ml_task: visualize
 	$(PYTHON_INTERPRETER) src/visualization/ml_task.py $(RUN_ID)
-	@echo "Done ml_task"
+	echo "Done ml_task"
 ml_task_only: config
 	$(PYTHON_INTERPRETER) src/visualization/ml_task.py $(RUN_ID)
-	@echo "Done Ml task only"
+	echo "Done Ml task only"
 
 ## Delete all compiled Python files
 clean:
