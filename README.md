@@ -65,7 +65,7 @@ Requirements:
 - GPU recommended for larger datasets
   
 
-### 1.1 Linux-based
+### 1.1 Linux and MacOS
 - clone this repo:
 ```bash
 git clone https://github.com/jan-forest/autoencodix.git
@@ -110,7 +110,6 @@ make requirements
 
 - if you encounter problems, see the troubleshooting section at the [end](#9-faq)
   
-### 1.3 Mac OS
 
 ### 1.4 HPC Cluster
 
