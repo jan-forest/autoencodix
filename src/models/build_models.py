@@ -46,8 +46,9 @@ def build_vanilla(
             )
             continue
         name_helper += f"{k}_"
-        trainloader = get_loader(cfg, k, split_type=split)
-        validloader = get_loader(cfg, k, split_type="valid")
+        trainloader = get_loader(cfg, k, split_type=split, mode=mode)
+        validloader = get_loader(cfg, k, split_type="valid", mode=mode)
+
         data.append(trainloader.dataset.x_tensor)
         valid_data.append(validloader.dataset.x_tensor)
         feature_ids.extend(
@@ -95,12 +96,13 @@ def build_vanilla(
         cfg["DATA_TYPE"][f"COMBINED-{name_helper}_{ae_type}_INPUT_VAL"]["FILE_PROC"]
     )
     combined_loader = get_loader(
-        cfg, f"COMBINED-{name_helper}_{ae_type}_INPUT", split_type=split
+        cfg, f"COMBINED-{name_helper}_{ae_type}_INPUT", split_type=split, mode=mode,
     )
     valid_combined_loader = get_loader(
         cfg,
         f"COMBINED-{name_helper}_{ae_type}_INPUT_VAL",
         split_type="valid",
+        mode=mode,
     )
     logger.info(f"DATA SIZE:{combined_loader.dataset.shape()}")
 
@@ -254,9 +256,9 @@ def build_stackix(cfg, data_path_keys, mode="load_trained", split="train"):
             continue
         name_helper += f"{k}_"  # for combined model name
         dataloader = get_loader(
-            cfg=cfg, path_key=k, split_type=split
+            cfg=cfg, path_key=k, split_type=split, mode=mode
         )  # train or test depending on split
-        validloader = get_loader(cfg=cfg, path_key=k, split_type="valid")
+        validloader = get_loader(cfg=cfg, path_key=k, split_type="valid", mode=mode)
 
         # dense layer size of VAE per data modality
         if "DENSE_SIZE" in cfg:
@@ -367,11 +369,12 @@ def build_stackix(cfg, data_path_keys, mode="load_trained", split="train"):
         "TYPE": "CONCAT",
     }
 
-    concat_loader = get_loader(cfg, temp_path_key, split_type=split)
+    concat_loader = get_loader(cfg, temp_path_key, split_type=split, mode=mode)
     valid_concat_loader = get_loader(
         cfg,
         f"CONCAT-{name_helper}_VALID_LATENT_SPACE",  # temp_path_key for valid
         split_type="valid",  # does not matter for concat cases, since correct csv is loaded via temp_path_key
+        mode=mode,
     )
 
     if mode == "train" or mode == "load_trained":

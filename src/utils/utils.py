@@ -410,12 +410,15 @@ def get_model(
             )
 
 
-def get_loader(cfg, path_key, split_type="train", tunetranslate=False):
+def get_loader(cfg, path_key, split_type="train", tunetranslate=False, mode="load_trained"):
     """returns a custom pytorch dataloader object for training and testing
     ARGS:
         cfg - (dict): config dictionary
         path_key - (str): as defined in src/config.yaml
         split_type - (str): indicator if train, valid or test dataset
+        mode - (str): indicator if the model should be loaded, trained or
+                       trained and tuned (optuna). Default is load_trained, options are
+                       'load_trained', 'load_tuned', 'train', 'tune'
     RETURNS:
         loader - (DataLoader): pytorch DataLoader for training data
 
@@ -427,6 +430,11 @@ def get_loader(cfg, path_key, split_type="train", tunetranslate=False):
         shuffle_active = True
     else:
         shuffle_active = False
+    
+    if "load_" in mode:
+        drop_last = False
+    else:
+        drop_last = True
 
     if cfg["MODEL_TYPE"] == "x-modalix" and not tunetranslate:
         logger.info("Cross Modalix Case")
@@ -436,6 +444,7 @@ def get_loader(cfg, path_key, split_type="train", tunetranslate=False):
             shuffle=shuffle_active,
             worker_init_fn=seed_worker,
             generator=g,
+            drop_last=drop_last,
         )
     elif cfg["DATA_TYPE"][path_key]["TYPE"] == "IMG":
         logger.info("img case, img dataloader")
@@ -447,6 +456,7 @@ def get_loader(cfg, path_key, split_type="train", tunetranslate=False):
             shuffle=shuffle_active,
             worker_init_fn=seed_worker,
             generator=g,
+            drop_last=drop_last,
         )
 
     dataloader = DataLoader(
@@ -460,6 +470,7 @@ def get_loader(cfg, path_key, split_type="train", tunetranslate=False):
         shuffle=shuffle_active,
         worker_init_fn=seed_worker,
         generator=g,
+        drop_last=drop_last,
     )
     return dataloader
 
@@ -647,17 +658,16 @@ def get_latent_space(cfg, model, data_loader, recon_calc=False, save_file=True):
 
     id_list = np.concatenate(id_list, axis=0)
 
-    latent_space = pd.DataFrame(latent_space, index=data_loader.dataset.data.index)
-    latent_space.index = id_list
+    latent_space = pd.DataFrame(latent_space, index=id_list)
+    # latent_space.index = id_list
 
     if recon_calc:
         recon_x = torch.cat(recon_x, dim=0)
         recon_x = recon_x.detach().cpu().numpy()
-        recon_x = pd.DataFrame(recon_x, index=data_loader.dataset.data.index)
+        recon_x = pd.DataFrame(recon_x, index=id_list)
 
-        recon_x.index = id_list
+        # recon_x.index = id_list
 
-    check = all(latent_space.index == (data_loader.dataset.sample_ids))
     path_key = data_loader.dataset.path_key
     if save_file:
         latent_space.columns = [f"L_{path_key}_" + str(x) for x in latent_space.columns]
