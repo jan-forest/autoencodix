@@ -94,7 +94,7 @@ sleep 1s
 
 ws_allocate -F horse AE-ws 10
 ws_register -F horse $HOME
-ln -s $VENV_PATH $HOME/horse/neju219d-AE-ws/autoencodix/venv-gallia
+ln -s $VENV_PATH $HOME/horse/$USER-AE-ws/autoencodix/venv-gallia
 #ln -s venv-AUTOENCODIX-capella-no-ssp venv-gallia
 
 
