@@ -17,6 +17,8 @@ https://jupyterhub.hpc.tu-dresden.de/hub/spawn#/~(cluster~'capella~nodes~'1~ntas
 
 
 ### 3. Open Terminal, located in the main area.
+<img width="677" height="180" alt="image" src="https://github.com/user-attachments/assets/1b237403-575a-4ec6-b78e-61aa69a34f3a" />
+
 
 ### 4. Type or copy/paste the following commands:
 ```
@@ -34,10 +36,13 @@ Navigate to (click on) horse/autoencodix and open `install-kernel-script.ipynb`.
 
 
 ### 6. Run the install-kernel-script.ipynb notebook.
+<img width="677" height="274" alt="image" src="https://github.com/user-attachments/assets/bb60f4f7-8785-4254-a428-a06cc02b9dd8" />
+
+
 
 ### 7. Follow the instructions indicated in the output.  
 
-## Troubleshooting:
+# Troubleshooting:
 If, for any reason, you would like to respawn JupyterLab, click: File -> Hub Control Panel -> Stop My Server
 To close your session. Then use the link above in 2. to respawn.
 
