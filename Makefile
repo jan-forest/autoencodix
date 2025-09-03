@@ -43,11 +43,6 @@ MIN_PYV = "3.10"
 MIN_PYV_FORMATED = $(call version,$(MIN_PYV))
 # -------------------------------------------------------------------------------------------
 
-ifeq (,$(shell which conda))
-HAS_CONDA=False
-else
-HAS_CONDA=True
-endif
 
 
 # create configs dir if not exists

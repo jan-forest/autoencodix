@@ -92,17 +92,13 @@ deactivate
 module reset
 sleep 1s
 
-ws_allocate -F horse AE-ws 10
-ws_register -F horse $HOME
-rsync -avzr --exclude=".git/" $HOME/autoencodix $HOME/horse/$USER-AE-ws/
 
 echo "=============================================================="
 echo " Your next steps"
 echo "=============================================================="
 echo "1. Re-load the browser"
-echo "2. Manually pick and drag the autoencodix folder into horse and then $USER-AE-ws folder"
-echo "3. Relocate to directory /horse/$USER-AE-ws/autoencodix/Tutorials"
-echo "4. Open Setup_InputFormat.ipynb notebook"
-echo "5. Select the \"$PYTHON_KERNEL_NAME\": Top Menu -> Kernel -> Change Kernel"
+echo "2. Relocate to Tutorials in the directory view on the left side"
+echo "3. Open Setup_InputFormat.ipynb notebook"
+echo "4. Select the \"$PYTHON_KERNEL_NAME\": Top Menu -> Kernel -> Change Kernel"
 
 # End of the script
