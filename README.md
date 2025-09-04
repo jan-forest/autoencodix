@@ -23,6 +23,7 @@ https://jupyterhub.hpc.tu-dresden.de/hub/spawn#/~(cluster~'capella~nodes~'1~ntas
 
 ### 4. Type or copy/paste the following commands:
 ```
+cd # ensure you're in home directory
 ws_allocate -F horse AE-ws 10
 ws_register -F horse $HOME
 cd $HOME/horse/$USER-AE-ws/
