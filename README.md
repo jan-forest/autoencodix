@@ -4,7 +4,7 @@
 
 
 ### 1. Set up VPN 
-See instructions sent over via email a few days ago:
+If not done so aready, follow the instructions sent over via email a few days ago:
 1. Download VPN client [here](https://www.eduvpn.org/client-apps).
 2. Launch client and log in with your guest account.
 3. If you have any errors, find solutions [here](https://faq.tickets.tu-dresden.de/otrs/public.pl?Action=PublicFAQZoom;ItemID=1284).
@@ -33,7 +33,7 @@ chmod +x autoencodix/install-kernel.sh
 
 ### 5. Navigate to autoencodix directory
 In the left sidebar, you will find the file browser. Here you are in your `$HOME` directory. 
-Navigate to (click on) horse/autoencodix and open `install-kernel-script.ipynb`.
+Navigate to (click on) horse/$USER-AE-ws/autoencodix and open `install-kernel-script.ipynb`.
 <img width="1002" height="475" alt="image" src="https://github.com/user-attachments/assets/185e2801-8056-4f83-ad39-0649829bf726" />
 
 

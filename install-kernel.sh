@@ -94,14 +94,19 @@ sleep 1s
 
 ws_allocate -F horse AE-ws 10
 ws_register -F horse $HOME
-ln -s $VENV_PATH $HOME/horse/$USER-AE-ws/autoencodix/venv-gallia
-#ln -s venv-AUTOENCODIX-capella-no-ssp venv-gallia
+
+if [ ! -L "$HOME/horse/$USER-AE-ws/autoencodix/venv-gallia" ]; then
+    ln -s "$VENV_PATH" "$HOME/horse/$USER-AE-ws/autoencodix/venv-gallia"
+fi
+
+#ln -s $VENV_PATH $HOME/horse/$USER-AE-ws/autoencodix/venv-gallia
+
 
 echo "=============================================================="
 echo " Your next steps"
 echo "=============================================================="
 echo "1. Re-load the browser"
-echo "2. Relocate to directory /horse/$USER-AE-ws/autoencodix/Tutorials"
+echo "2. Relocate to Tutorials in directory /horse/$USER-AE-ws/autoencodix/Tutorials"
 echo "3. Open Quick_Start.ipynb notebook"
 echo "4. If not already pre-selected: Select the \"$PYTHON_KERNEL_NAME\": Top Menu -> Kernel -> Change Kernel"
 
