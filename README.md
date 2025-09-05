@@ -33,8 +33,9 @@ chmod +x autoencodix/install-kernel.sh
 
 ### 5. Navigate to autoencodix directory
 In the left sidebar, you will find the file browser. Here you are in your `$HOME` directory. 
-Navigate to (click on) horse/$USER-AE-ws/autoencodix and open `install-kernel-script.ipynb`.
-<img width="1002" height="475" alt="image" src="https://github.com/user-attachments/assets/185e2801-8056-4f83-ad39-0649829bf726" />
+Navigate to (click on) `horse` -> `$USER-AE-ws` -> `autoencodix` and open `install-kernel-script.ipynb`.
+<img width="1002" height="475" alt="image" src="https://github.com/user-attachments/assets/c7f4f676-eff0-486f-99d4-dd984e7c945e" />
+
 
 
 ### 6. Run the install-kernel-script.ipynb notebook.
