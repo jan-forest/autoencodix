@@ -27,7 +27,12 @@ Please, use this to cite our work when using our framework:
 	journal = {bioRxiv}
 }
 ```
- 
+# :information_source: Future :information_source:
+
+A Python-package version of AUTOENCODIX is currently under development and will substitute future development of AUTOENCODIX. 
+
+:construction: You can check out the progress in this repo: [autoencodix_package](https://github.com/jan-forest/autoencodix_package) :construction:
+
 
 # Table of contents
   
