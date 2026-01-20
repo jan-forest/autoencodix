@@ -14,17 +14,19 @@ Consequently, we present `AUTOENCODIX` with the following features:
 
 <img src="https://raw.githubusercontent.com/jan-forest/autoencodix/main/images/pipeline_overview.png" alt="pipeline-overview" width="1200"/>
 
-For a detailed description and benchmark of capabilities, check our preprint and publication here: [bioRxiv 10.1101/2024.12.17.628906](https://doi.org/10.1101/2024.12.17.628906 ) 
+For a detailed description and benchmark of capabilities, check our publication in [Nature Computational Science](https://doi.org/10.1038/s43588-025-00916-4) 
 
 Please, use this to cite our work when using our framework: 
 
 ```
-@article {autoencodix2024,
-	author = {Joas, Maximilian and Jurenaite, Neringa and Pra{\v s}{\v c}evi{\'c}, Du{\v s}an and Scherf, Nico and Ewald, Jan},
-	title = {A generalized and versatile framework to train and evaluate autoencoders for biological representation learning and beyond: AUTOENCODIX},
-	year = {2024},
-	doi = {10.1101/2024.12.17.628906},
-	journal = {bioRxiv}
+@article{joas2025autoencodix,
+  title={AUTOENCODIX: a generalized and versatile framework to train and evaluate autoencoders for biological representation learning and beyond},
+  author={Joas, Maximilian Josef and Jurenaite, Neringa and Pra{\v{s}}{\v{c}}evi{\'c}, Du{\v{s}}an and Scherf, Nico and Ewald, Jan},
+  journal={Nature Computational Science},
+  pages={1--13},
+  year={2025},
+  doi={}
+  publisher={Nature Publishing Group US New York}
 }
 ```
 # :information_source: Future :information_source:
